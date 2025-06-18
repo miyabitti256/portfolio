@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700;900&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -57,43 +58,24 @@
 
 :root {
   --radius: 0.625rem;
-  /* プロジェクトカラーパレット（淡い青系）に合わせた shadcn/ui 変数 */
-  --background: 255 255 255;
-  /* white */
-  --foreground: 15 23 42;
-  /* slate-900 */
-  --card: 255 255 255;
-  /* white */
-  --card-foreground: 15 23 42;
-  /* slate-900 */
-  --popover: 255 255 255;
-  /* white */
-  --popover-foreground: 15 23 42;
-  /* slate-900 */
-  --primary: 14 165 233;
-  /* sky-500 - メインブルー */
-  --primary-foreground: 255 255 255;
-  /* white */
-  --secondary: 241 245 249;
-  /* slate-100 */
-  --secondary-foreground: 15 23 42;
-  /* slate-900 */
-  --muted: 241 245 249;
-  /* slate-100 */
-  --muted-foreground: 100 116 139;
-  /* slate-500 */
-  --accent: 224 242 254;
-  /* sky-100 */
-  --accent-foreground: 3 105 161;
-  /* sky-700 */
-  --destructive: 239 68 68;
-  /* red-500 */
-  --border: 226 232 240;
-  /* slate-200 */
-  --input: 226 232 240;
-  /* slate-200 */
-  --ring: 14 165 233;
-  /* sky-500 */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -266,29 +248,6 @@
   }
 
   .terminal-cursor {
-    @apply inline-block w-2 h-5 bg-green-400;
-    animation: terminal-blink 1s infinite;
+    @apply inline-block w-2 h-5 bg-green-400 animate-pulse;
   }
-}
-
-@keyframes terminal-blink {
-
-  0%,
-  50% {
-    opacity: 1;
-  }
-
-  51%,
-  100% {
-    opacity: 0;
-  }
-}
-
-/* Skills Section用のプログレスバー */
-.progress-bar {
-  @apply h-2 bg-gray-200 rounded-full overflow-hidden;
-}
-
-.progress-fill {
-  @apply h-full transition-all duration-1000 ease-out rounded-full;
 }
