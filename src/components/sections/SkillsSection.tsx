@@ -63,7 +63,7 @@ export default function SkillsSection() {
   };
 
   return (
-    <section id="skills" className="relative py-20 bg-white">
+    <section id="skills" className="relative py-20 bg-gradient-to-br from-primary-100 to-primary-200">
       <div className="container mx-auto px-6">
         <motion.div
           variants={sectionAnimations.staggerContainer}

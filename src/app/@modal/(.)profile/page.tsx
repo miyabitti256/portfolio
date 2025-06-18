@@ -21,7 +21,7 @@ export default function ProfileModalPage() {
 
   return (
     <Dialog defaultOpen onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-white">
         <DialogHeader>
           <DialogTitle className="font-zen-maru">プロフィール</DialogTitle>
           <DialogDescription className="font-zen-maru">

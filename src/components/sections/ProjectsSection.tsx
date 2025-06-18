@@ -15,18 +15,22 @@ import {
   Calendar,
   CheckCircle,
   Clock,
-  PlayCircle
+  PlayCircle,
+  Package,
+  BookOpen,
+  FolderOpen
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { mainProject, subProjects, projectCategories } from '@/data/projects';
 import type { Project } from '@/data/projects';
+import VSCodeEditor from '@/components/engineer-ui/VSCodeEditor';
 
 export default function ProjectsSection() {
-  const [activeTab, setActiveTab] = useState('overview');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isVisible, setIsVisible] = useState(false);
+  const [currentVSCodeTab, setCurrentVSCodeTab] = useState('');
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -47,6 +51,157 @@ export default function ProjectsSection() {
   const filteredProjects = selectedCategory === 'all' 
     ? subProjects 
     : subProjects.filter(project => project.category === selectedCategory);
+
+  // VS Code風エディター用のファイル構造
+  const projectFiles = [
+        {
+          id: 'readme',
+          name: 'README.md',
+          type: 'file' as const,
+          icon: FileText,
+          extension: '.md',
+          content: (
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 font-zen-maru">
+              <div className="space-y-4">
+                <h1 className="text-xl sm:text-2xl font-bold text-white mb-4"># {mainProject.title}</h1>
+                <p className="text-gray-300 leading-relaxed">{mainProject.description}</p>
+              </div>
+              
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-blue-400">## プロジェクト概要</h2>
+                <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                  {mainProject.longDescription}
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-blue-400">## 主な特徴</h2>
+                <ul className="space-y-2">
+                  {mainProject.highlights.map((highlight, index) => (
+                    <li key={index} className="flex items-start gap-2 text-gray-300">
+                      <span className="text-green-400 mt-1">-</span>
+                      <span>{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-blue-400">## リンク</h2>
+                <div className="flex flex-wrap gap-2 sm:gap-3">
+                  <Button size="sm" asChild>
+                    <a href={mainProject.liveUrl} target="_blank" rel="noopener noreferrer">
+                      <Globe size={16} className="mr-1 sm:mr-2" />
+                      <span className="text-xs sm:text-sm">Webサイト</span>
+                    </a>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={mainProject.githubUrl} target="_blank" rel="noopener noreferrer">
+                      <Github size={16} className="mr-1 sm:mr-2" />
+                      <span className="text-xs sm:text-sm">GitHub</span>
+                    </a>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={mainProject.articleUrl} target="_blank" rel="noopener noreferrer">
+                      <FileText size={16} className="mr-1 sm:mr-2" />
+                      <span className="text-xs sm:text-sm">技術記事</span>
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )
+        },
+        {
+          id: 'package',
+          name: 'package.json',
+          type: 'file' as const,
+          icon: Package,
+          extension: '.json',
+          content: (
+            <div className="p-4 sm:p-6 font-mono text-xs sm:text-sm">
+              <pre className="text-gray-300">
+{`{
+  "name": "${mainProject.titleEn?.toLowerCase().replace(/\s+/g, '-') || 'project'}",
+  "version": "1.0.0",
+  "description": "${mainProject.description}",
+  "architecture": {`}
+              </pre>
+              {mainProject.architecture && Object.entries(mainProject.architecture).map(([key, technologies]) => (
+                <div key={key} className="ml-4 my-4">
+                  <div className="text-blue-400 mb-2">"{key}": [</div>
+                  {technologies.map((tech, index) => (
+                    <div key={index} className="ml-4 text-green-400">
+                      "{tech}"{index < technologies.length - 1 ? ',' : ''}
+                    </div>
+                  ))}
+                  <div className="text-blue-400">]{key !== 'deployment' ? ',' : ''}</div>
+                </div>
+              ))}
+              <pre className="text-gray-300">
+{`  },
+  "highlights": [`}
+              </pre>
+              {mainProject.highlights.map((highlight, index) => (
+                <div key={index} className="ml-4 text-green-400">
+                  "{highlight}"{index < mainProject.highlights.length - 1 ? ',' : ''}
+                </div>
+              ))}
+              <pre className="text-gray-300">
+{`  ],
+  "status": "${mainProject.status}",
+  "period": "${mainProject.startDate} - ${mainProject.endDate}"
+}`}
+              </pre>
+            </div>
+          )
+        },
+        {
+          id: 'learning',
+          name: 'LEARNING.md',
+          type: 'file' as const,
+          icon: BookOpen,
+          extension: '.md',
+          content: (
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 font-zen-maru">
+              <h1 className="text-xl sm:text-2xl font-bold text-white mb-4"># 学習記録</h1>
+              
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-orange-400">## 技術的課題</h2>
+                <ul className="space-y-3">
+                  {mainProject.challenges.map((challenge, index) => (
+                    <li key={index} className="p-3 bg-orange-900/30 border-l-4 border-orange-400 rounded-r-lg">
+                      <span className="text-gray-300">{challenge}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-blue-400">## 学んだこと</h2>
+                <ul className="space-y-3">
+                  {mainProject.learnings.map((learning, index) => (
+                    <li key={index} className="p-3 bg-blue-900/30 border-l-4 border-blue-400 rounded-r-lg">
+                      <span className="text-gray-300">{learning}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-green-400">## 今後の展望</h2>
+                <div className="p-4 bg-green-900/30 border border-green-400 rounded-lg">
+                  <p className="text-gray-300 leading-relaxed">
+                    このプロジェクトを通じて、フルスタック開発の基礎を身につけることができました。
+                    今後は、より大規模なアプリケーションの開発や、新しい技術スタック（Rust、Go）への
+                    挑戦も視野に入れています。
+                  </p>
+                </div>
+              </div>
+            </div>
+          )
+        }
+      ];
 
   const getStatusIcon = (status: Project['status']) => {
     switch (status) {
@@ -74,112 +229,10 @@ export default function ProjectsSection() {
     }
   };
 
-  const tabContents = {
-    overview: (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-3 font-zen-maru">概要</h4>
-            <p className="text-gray-700 leading-relaxed font-zen-maru">
-              {mainProject.longDescription}
-            </p>
-          </div>
-          <div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-3 font-zen-maru">主な特徴</h4>
-            <ul className="space-y-2">
-              {mainProject.highlights.map((highlight, index) => (
-                <li key={index} className="flex items-start gap-2 text-gray-700 font-zen-maru">
-                  <CheckCircle size={16} className="text-green-500 mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">{highlight}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        
-        <div className="flex flex-wrap gap-3">
-          <Button asChild>
-            <a href={mainProject.liveUrl} target="_blank" rel="noopener noreferrer">
-              <Globe size={18} className="mr-2" />
-              ライブサイト
-            </a>
-          </Button>
-          <Button variant="outline" asChild>
-            <a href={mainProject.githubUrl} target="_blank" rel="noopener noreferrer">
-              <Github size={18} className="mr-2" />
-              GitHub
-            </a>
-          </Button>
-          <Button variant="outline" asChild>
-            <a href={mainProject.articleUrl} target="_blank" rel="noopener noreferrer">
-              <FileText size={18} className="mr-2" />
-              技術記事
-            </a>
-          </Button>
-        </div>
-      </div>
-    ),
-    
-    architecture: (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {mainProject.architecture && Object.entries(mainProject.architecture).map(([key, technologies]) => (
-            <div key={key} className="p-4 bg-gray-50 rounded-lg border">
-              <div className="flex items-center gap-2 mb-3">
-                {key === 'frontend' && <Code size={18} className="text-blue-500" />}
-                {key === 'backend' && <Server size={18} className="text-green-500" />}
-                {key === 'database' && <Database size={18} className="text-purple-500" />}
-                {key === 'deployment' && <Globe size={18} className="text-orange-500" />}
-                <h4 className="font-semibold text-gray-900 capitalize font-zen-maru">
-                  {key === 'frontend' && 'フロントエンド'}
-                  {key === 'backend' && 'バックエンド'}
-                  {key === 'database' && 'データベース'}
-                  {key === 'deployment' && 'デプロイ'}
-                </h4>
-              </div>
-              <div className="space-y-2">
-                {technologies.map((tech, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs">
-                    {tech}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
-    
-    challenges: (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-3 font-zen-maru">技術的課題</h4>
-            <ul className="space-y-3">
-              {mainProject.challenges.map((challenge, index) => (
-                <li key={index} className="p-3 bg-orange-50 border-l-4 border-orange-400 rounded-r-lg">
-                  <span className="text-sm text-gray-700 font-zen-maru">{challenge}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-3 font-zen-maru">学んだこと</h4>
-            <ul className="space-y-3">
-              {mainProject.learnings.map((learning, index) => (
-                <li key={index} className="p-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
-                  <span className="text-sm text-gray-700 font-zen-maru">{learning}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    )
-  };
+
 
   return (
-    <section id="projects" className="py-20 bg-white">
+    <section id="projects" className="py-20 bg-gradient-to-br from-primary-50 to-primary-100">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -195,99 +248,63 @@ export default function ProjectsSection() {
           </p>
         </motion.div>
 
-        {/* メインプロジェクト - VS Code風タブUI */}
+        {/* メインプロジェクト - VS Code風エディター */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 40 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mb-16"
         >
-          <div className="bg-gray-900 rounded-t-lg">
-            {/* VS Code風ヘッダー */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-700">
-              <div className="flex items-center gap-2">
-                <div className="flex gap-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                </div>
-                <span className="text-gray-300 text-sm ml-4 font-mono">
-                  {mainProject.title}.project
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                {getStatusIcon(mainProject.status)}
-                <span className="text-gray-300 text-sm font-zen-maru">
-                  {getStatusText(mainProject.status)}
-                </span>
-              </div>
-            </div>
-
-            {/* タブメニュー */}
-            <div className="flex border-b border-gray-700">
-              {[
-                { id: 'overview', label: 'README.md', icon: FileText },
-                { id: 'architecture', label: 'package.json', icon: Code },
-                { id: 'challenges', label: 'LEARNING.md', icon: ExternalLink }
-              ].map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-4 py-3 text-sm font-mono border-r border-gray-700 transition-colors duration-200 ${
-                      activeTab === tab.id
-                        ? 'bg-gray-800 text-white border-t-2 border-t-blue-500'
-                        : 'bg-gray-900 text-gray-400 hover:text-gray-200 hover:bg-gray-800'
-                    }`}
-                  >
-                    <Icon size={14} />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* タブコンテンツ */}
-          <div className="bg-white border border-gray-200 rounded-b-lg p-6">
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2 font-zen-maru">
-                    {mainProject.title}
-                    {mainProject.titleEn && (
-                      <span className="text-lg text-gray-500 ml-2 font-mono">
-                        ({mainProject.titleEn})
-                      </span>
-                    )}
-                  </h3>
-                  <p className="text-gray-600 font-zen-maru">{mainProject.description}</p>
-                </div>
-                <div className="text-right">
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                    <Calendar size={14} />
-                    <span className="font-zen-maru">
-                      {mainProject.startDate} - {mainProject.endDate}
+          {/* プロジェクト情報ヘッダー */}
+          {/* <div className="mb-6 p-6 bg-gradient-to-r from-primary-50 to-primary-100 rounded-lg border border-primary-200">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2 font-zen-maru">
+                  {mainProject.title}
+                  {mainProject.titleEn && (
+                    <span className="text-lg text-gray-500 ml-2 font-mono">
+                      ({mainProject.titleEn})
                     </span>
-                  </div>
-                  <div className="flex flex-wrap gap-1 justify-end">
-                    {mainProject.technologies.slice(0, 4).map((tech, index) => (
-                      <Badge key={index} variant="skill" className="text-xs">
-                        {tech}
-                      </Badge>
-                    ))}
-                    {mainProject.technologies.length > 4 && (
-                      <Badge variant="secondary" className="text-xs">
-                        +{mainProject.technologies.length - 4}
-                      </Badge>
-                    )}
-                  </div>
+                  )}
+                </h3>
+                <p className="text-gray-600 font-zen-maru">{mainProject.description}</p>
+              </div>
+              <div className="text-right">
+                <div className="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                  <Calendar size={14} />
+                  <span className="font-zen-maru">
+                    {mainProject.startDate} - {mainProject.endDate}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  {getStatusIcon(mainProject.status)}
+                  <span className="text-sm font-zen-maru">
+                    {getStatusText(mainProject.status)}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1 justify-end">
+                  {mainProject.technologies.slice(0, 4).map((tech, index) => (
+                    <Badge key={index} variant="skill" className="text-xs">
+                      {tech}
+                    </Badge>
+                  ))}
+                  {mainProject.technologies.length > 4 && (
+                    <Badge variant="secondary" className="text-xs">
+                      +{mainProject.technologies.length - 4}
+                    </Badge>
+                  )}
                 </div>
               </div>
             </div>
+          </div> */}
 
-            {tabContents[activeTab as keyof typeof tabContents]}
+          {/* VS Code風エディター */}
+          <div className="h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-[600px] xl:h-[700px] min-h-[500px]">
+            <VSCodeEditor
+              projectName={mainProject.titleEn || mainProject.title}
+              files={projectFiles}
+              onTabChange={setCurrentVSCodeTab}
+            />
           </div>
         </motion.div>
 

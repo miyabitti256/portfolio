@@ -29,6 +29,14 @@ const PARTICLE_POSITIONS = [
   { left: 55, top: 75 },
   { left: 25, top: 55 },
   { left: 95, top: 30 },
+  { left: 5, top: 60 },
+  { left: 92, top: 45 },
+  { left: 38, top: 15 },
+  { left: 68, top: 25 },
+  { left: 12, top: 85 },
+  { left: 78, top: 70 },
+  { left: 48, top: 95 },
+  { left: 88, top: 35 },
 ];
 
 export default function HeroSection() {
@@ -47,37 +55,52 @@ export default function HeroSection() {
   }, []);
 
   const scrollToNext = () => {
-    const nextSection = document.querySelector('#projects');
+    const nextSection = document.querySelector('#about');
     nextSection?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center hero-gradient overflow-hidden">
       {/* 背景のパーティクル */}
-      <div className="absolute inset-0 overflow-hidden">
-        {PARTICLE_POSITIONS.map((position, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-blue-400/30 rounded-full"
-            style={{
-              left: `${position.left}%`,
-              top: `${position.top}%`,
-            }}
-            animate={{
-              y: [0, -20, 0],
-              opacity: [0.4, 1, 0.4],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.1, // インデックスベースの遅延
-            }}
-          />
-        ))}
+      <div className="absolute inset-0 overflow-hidden z-10">
+        {PARTICLE_POSITIONS.map((position, i) => {
+          // パーティクルの種類をバリエーション
+          const isLarge = i % 5 === 0;
+          const isGlow = i % 3 === 0;
+          const size = isLarge ? 'w-3 h-3' : 'w-2 h-2';
+          const color = isGlow 
+            ? 'bg-gradient-to-br from-blue-400 to-cyan-500' 
+            : 'bg-blue-500/70';
+          const glowStyle = isGlow 
+            ? '0 0 12px rgba(59, 130, 246, 0.6), 0 0 20px rgba(6, 182, 212, 0.3)' 
+            : '0 0 6px rgba(59, 130, 246, 0.4)';
+          
+          return (
+            <motion.div
+              key={i}
+              className={`absolute ${size} ${color} rounded-full shadow-sm`}
+              style={{
+                left: `${position.left}%`,
+                top: `${position.top}%`,
+                boxShadow: glowStyle,
+              }}
+              animate={{
+                y: [0, isLarge ? -30 : -25, 0],
+                opacity: [0.7, 1, 0.7],
+                scale: [1, isLarge ? 1.3 : 1.2, 1],
+              }}
+              transition={{
+                duration: isLarge ? 5 : 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: i * 0.12,
+              }}
+            />
+          );
+        })}
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-6 relative z-20">
         <div className="max-w-4xl mx-auto text-center">
           {/* プロフィール画像とモーダル */}
           <motion.div
