@@ -4,10 +4,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FolderOpen, 
-  Folder, 
+  Folder,
   FileText, 
-  Package,
-  BookOpen,
   X,
   Menu,
   ChevronRight,
@@ -17,7 +15,6 @@ import {
   GitBranch
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
 interface FileItem {
   id: string;
@@ -46,6 +43,7 @@ interface VSCodeEditorProps {
 export default function VSCodeEditor({ projectName, files, onTabChange }: VSCodeEditorProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [explorerExpanded, setExplorerExpanded] = useState(true);
+  const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
   const [openTabs, setOpenTabs] = useState<Tab[]>([]);
   const [activeTab, setActiveTab] = useState<string>('');
   const [isMobile, setIsMobile] = useState(false);
@@ -173,57 +171,80 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
     });
   };
 
+  const toggleFolder = useCallback((folderId: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setExpandedFolders(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(folderId)) {
+        newSet.delete(folderId);
+      } else {
+        newSet.add(folderId);
+      }
+      return newSet;
+    });
+  }, []);
+
   const renderFileTree = (items: FileItem[], depth = 0) => {
-    return items.map((item) => (
-      <div key={item.id} style={{ marginLeft: `${depth * 12}px` }}>
-        <div
-          className={`flex items-center gap-2 px-2 py-1 text-sm text-gray-300 hover:bg-gray-700 cursor-pointer rounded transition-colors duration-200 ${
-            activeTab === item.id ? 'bg-gray-700 text-white' : ''
-          }`}
-          onClick={() => item.type === 'file' ? openFile(item) : setExplorerExpanded(!explorerExpanded)}
-        >
-          {item.type === 'folder' ? (
-            explorerExpanded ? (
-              <ChevronDown size={16} className="text-gray-400" />
+    return items.map((item) => {
+      const isExpanded = expandedFolders.has(item.id);
+      
+      return (
+        <div key={item.id} style={{ marginLeft: `${depth * 12}px` }}>
+          <div
+            className={`flex items-center gap-2 px-2 py-1 text-sm text-gray-300 hover:bg-gray-700 cursor-pointer rounded transition-colors duration-200 ${
+              activeTab === item.id ? 'bg-gray-700 text-white' : ''
+            }`}
+            onClick={(e) => {
+              if (item.type === 'file') {
+                openFile(item);
+              } else {
+                toggleFolder(item.id, e);
+              }
+            }}
+          >
+            {item.type === 'folder' ? (
+              isExpanded ? (
+                <ChevronDown size={16} className="text-gray-400" />
+              ) : (
+                <ChevronRight size={16} className="text-gray-400" />
+              )
             ) : (
-              <ChevronRight size={16} className="text-gray-400" />
-            )
-          ) : (
-            <div className="w-4" />
-          )}
+              <div className="w-4" />
+            )}
+            
+            <item.icon 
+              size={16} 
+              className={
+                item.type === 'folder' 
+                  ? 'text-blue-400' 
+                  : item.extension === '.md' 
+                    ? 'text-blue-300'
+                    : item.extension === '.json'
+                      ? 'text-yellow-400'
+                      : 'text-gray-300'
+              } 
+            />
+            <span className="flex-1 truncate">{item.name}</span>
+            {item.type === 'file' && activeTab === item.id && (
+              <div className="w-2 h-2 bg-white rounded-full opacity-60" />
+            )}
+          </div>
           
-          <item.icon 
-            size={16} 
-            className={
-              item.type === 'folder' 
-                ? 'text-blue-400' 
-                : item.extension === '.md' 
-                  ? 'text-blue-300'
-                  : item.extension === '.json'
-                    ? 'text-yellow-400'
-                    : 'text-gray-300'
-            } 
-          />
-          <span className="flex-1 truncate">{item.name}</span>
-          {item.type === 'file' && activeTab === item.id && (
-            <div className="w-2 h-2 bg-white rounded-full opacity-60" />
+          {item.type === 'folder' && item.children && isExpanded && (
+            <AnimatePresence>
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {renderFileTree(item.children, depth + 1)}
+              </motion.div>
+            </AnimatePresence>
           )}
         </div>
-        
-        {item.type === 'folder' && item.children && explorerExpanded && (
-          <AnimatePresence>
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {renderFileTree(item.children, depth + 1)}
-            </motion.div>
-          </AnimatePresence>
-        )}
-      </div>
-    ));
+      );
+    });
   };
 
   const activeTabContent = openTabs.find(tab => tab.id === activeTab)?.content;
@@ -290,67 +311,67 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
             >
               {/* サイドバーコンテンツ */}
               <div className="flex flex-col flex-1">
-              {/* サイドバーヘッダー */}
-              <div className="flex items-center justify-between p-3 border-b border-gray-700">
-                <h3 className="text-sm font-medium text-gray-300">エクスプローラー</h3>
-                {isMobile && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setSidebarOpen(false)}
-                    className="text-gray-400 hover:text-white p-1"
-                  >
-                    <X size={16} />
-                  </Button>
-                )}
-              </div>
+                {/* サイドバーヘッダー */}
+                <div className="flex items-center justify-between p-3 border-b border-gray-700">
+                  <h3 className="text-sm font-medium text-gray-300">エクスプローラー</h3>
+                  {isMobile && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSidebarOpen(false)}
+                      className="text-gray-400 hover:text-white p-1"
+                    >
+                      <X size={16} />
+                    </Button>
+                  )}
+                </div>
 
-              {/* プロジェクトツリー */}
-              <div className="flex-1 overflow-y-auto p-2">
-                <div className="mb-4">
-                  <div
-                    className="flex items-center gap-2 text-sm text-gray-300 font-medium cursor-pointer hover:text-white transition-colors duration-200"
-                    onClick={() => setExplorerExpanded(!explorerExpanded)}
-                  >
-                    {explorerExpanded ? (
-                      <ChevronDown size={16} />
-                    ) : (
-                      <ChevronRight size={16} />
-                    )}
-                    <FolderOpen size={16} className="text-blue-400" />
-                    <span className="uppercase tracking-wide">{projectName}</span>
+                {/* プロジェクトツリー */}
+                <div className="flex-1 overflow-y-auto p-2">
+                  <div className="mb-4">
+                    <div
+                      className="flex items-center gap-2 text-sm text-gray-300 font-medium cursor-pointer hover:text-white transition-colors duration-200"
+                      onClick={() => setExplorerExpanded(!explorerExpanded)}
+                    >
+                      {explorerExpanded ? (
+                        <ChevronDown size={16} />
+                      ) : (
+                        <ChevronRight size={16} />
+                      )}
+                      <FolderOpen size={16} className="text-blue-400" />
+                      <span className="uppercase tracking-wide">{projectName}</span>
+                    </div>
+                    
+                    <AnimatePresence>
+                      {explorerExpanded && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="mt-2"
+                        >
+                          {renderFileTree(files)}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
-                  
-                  <AnimatePresence>
-                    {explorerExpanded && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="mt-2"
-                      >
-                        {renderFileTree(files)}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </div>
-              </div>
 
-              {/* サイドバーフッター */}
-              <div className="p-3 border-t border-gray-700 flex items-center justify-between">
-                <div className="flex gap-2">
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white p-1">
-                    <Search size={14} />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white p-1">
-                    <GitBranch size={14} />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white p-1">
-                    <Settings size={14} />
-                  </Button>
+                {/* サイドバーフッター */}
+                <div className="p-3 border-t border-gray-700 flex items-center justify-between">
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white p-1">
+                      <Search size={14} />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white p-1">
+                      <GitBranch size={14} />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white p-1">
+                      <Settings size={14} />
+                    </Button>
+                  </div>
                 </div>
-              </div>
               </div>
 
               {/* ドラッグハンドル（PC表示のみ） */}
@@ -451,11 +472,8 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
           <span>{getFileType(activeTabData)}</span>
         </div>
         <div className="flex items-center gap-4">
-          <span>行 1, 列 1</span>
-          <div className="flex items-center gap-1">
-            <GitBranch size={12} />
-            <span>main</span>
-          </div>
+          <span>Portfolio</span>
+          <span>VSCode</span>
         </div>
       </div>
 

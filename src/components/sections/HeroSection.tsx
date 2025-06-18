@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Github, Twitter, Mail, ChevronDown } from 'lucide-react';
+import { Mail, ChevronDown, BookOpen } from 'lucide-react';
+import { GitHubIcon, XIcon, ZennIcon } from '@/components/ui/social-icons';
 import { heroAnimations } from '@/data/animations';
 import { personalInfo } from '@/data/personal';
 
@@ -42,21 +43,76 @@ const PARTICLE_POSITIONS = [
 export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [currentPhase, setCurrentPhase] = useState(0);
+  const [particlesVisible, setParticlesVisible] = useState(false);
+  const [animationsEnabled, setAnimationsEnabled] = useState(true);
 
   useEffect(() => {
-    setIsVisible(true);
-    
-    // アニメーションフェーズの制御
-    const timer = setTimeout(() => {
-      setCurrentPhase(1);
-    }, 1000);
+    // 強制的にアニメーションを開始（PageTransitionに依存しない）
+    const startAnimation = () => {
+      setIsVisible(true);
+      setParticlesVisible(true);
+      
+      // アニメーションフェーズの制御
+      const phaseTimer = setTimeout(() => {
+        setCurrentPhase(1);
+      }, 800);
 
-    return () => clearTimeout(timer);
-  }, []);
+      return () => clearTimeout(phaseTimer);
+    };
+
+    // 短い遅延の後にアニメーション開始
+    const initTimer = setTimeout(startAnimation, 200);
+
+    // フォールバック：アニメーションが動作しない場合の検知
+    const fallbackTimer = setTimeout(() => {
+      if (!isVisible) {
+        console.warn('Animations seem to be blocked, enabling fallback');
+        setAnimationsEnabled(false);
+        setIsVisible(true);
+        setParticlesVisible(true);
+      }
+    }, 2000);
+
+    return () => {
+      clearTimeout(initTimer);
+      clearTimeout(fallbackTimer);
+    };
+  }, []); // 依存配列を空にして、コンポーネント初期化時に1回だけ実行
 
   const scrollToNext = () => {
-    const nextSection = document.querySelector('#about');
-    nextSection?.scrollIntoView({ behavior: 'smooth' });
+    const nextSection = document.querySelector('#projects');
+    
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Scroll Debug:', {
+        element: nextSection,
+        elementExists: !!nextSection,
+        elementOffset: nextSection?.getBoundingClientRect(),
+        currentScroll: window.scrollY,
+      });
+    }
+
+    if (nextSection) {
+      // より確実なスクロール実装
+      const targetPosition = (nextSection as HTMLElement).offsetTop - 80; // ヘッダー分のオフセット
+      
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+      
+      // フォールバック：scrollToが動作しない場合
+      setTimeout(() => {
+        if (Math.abs(window.scrollY - targetPosition) > 50) {
+          nextSection.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest'
+          });
+        }
+      }, 100);
+    } else {
+      console.warn('Projects section not found');
+    }
   };
 
   return (
@@ -75,6 +131,22 @@ export default function HeroSection() {
             ? '0 0 12px rgba(59, 130, 246, 0.6), 0 0 20px rgba(6, 182, 212, 0.3)' 
             : '0 0 6px rgba(59, 130, 246, 0.4)';
           
+          // アニメーション無効時のフォールバック
+          if (!animationsEnabled) {
+            return (
+              <div
+                key={i}
+                className={`absolute ${size} ${color} rounded-full shadow-sm animate-pulse`}
+                style={{
+                  left: `${position.left}%`,
+                  top: `${position.top}%`,
+                  boxShadow: glowStyle,
+                  animationDelay: `${i * 0.1}s`,
+                }}
+              />
+            );
+          }
+          
           return (
             <motion.div
               key={i}
@@ -84,16 +156,29 @@ export default function HeroSection() {
                 top: `${position.top}%`,
                 boxShadow: glowStyle,
               }}
+              initial={{ opacity: 0, scale: 0, y: 10 }}
               animate={{
-                y: [0, isLarge ? -30 : -25, 0],
                 opacity: [0.7, 1, 0.7],
+                y: [0, isLarge ? -30 : -25, 0],
                 scale: [1, isLarge ? 1.3 : 1.2, 1],
               }}
               transition={{
                 duration: isLarge ? 5 : 4,
                 repeat: Infinity,
                 ease: "easeInOut",
-                delay: i * 0.12,
+                delay: i * 0.08,
+                opacity: {
+                  duration: isLarge ? 3 : 2.5,
+                  repeat: Infinity,
+                },
+                y: {
+                  duration: isLarge ? 5 : 4,
+                  repeat: Infinity,
+                },
+                scale: {
+                  duration: isLarge ? 4 : 3,
+                  repeat: Infinity,
+                }
               }}
             />
           );
@@ -205,15 +290,10 @@ export default function HeroSection() {
             >
               作品を見る
             </button>
-            <a
-              href={personalInfo.contacts.github.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-8 py-4 border-2 border-primary-400 text-primary-700 rounded-lg hover:bg-primary-50 hover:border-primary-500 hover:text-primary-800 transition-all duration-300 hover:scale-105 font-zen-maru flex items-center gap-2 shadow-sm"
-            >
-              <Github size={20} />
-              GitHub
-            </a>
+            <Link href="/articles" className="px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 hover:shadow-xl transition-all duration-300 hover:scale-105 font-zen-maru shadow-lg flex items-center gap-2">
+              <BookOpen size={20} />
+              技術ブログ
+            </Link>
           </motion.div>
 
           {/* ソーシャルリンク */}
@@ -229,7 +309,7 @@ export default function HeroSection() {
               rel="noopener noreferrer"
               className="text-gray-600 hover:text-blue-600 transition-colors duration-300 hover:scale-110 transform"
             >
-              <Github size={24} />
+              <GitHubIcon size={24} />
             </a>
             <a
               href={personalInfo.contacts.twitter.url}
@@ -237,7 +317,7 @@ export default function HeroSection() {
               rel="noopener noreferrer"
               className="text-gray-600 hover:text-blue-400 transition-colors duration-300 hover:scale-110 transform"
             >
-              <Twitter size={24} />
+              <XIcon size={24} />
             </a>
             <a
               href={personalInfo.contacts.zenn.url}
@@ -245,7 +325,7 @@ export default function HeroSection() {
               rel="noopener noreferrer"
               className="text-gray-600 hover:text-green-600 transition-colors duration-300 hover:scale-110 transform"
             >
-              <Mail size={24} />
+              <ZennIcon size={24} />
             </a>
           </motion.div>
         </div>
@@ -253,27 +333,42 @@ export default function HeroSection() {
 
       {/* スクロールインジケーター */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: currentPhase >= 1 ? 1 : 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: currentPhase >= 1 ? 1 : 0, y: currentPhase >= 1 ? 0 : 20 }}
         transition={{ duration: 0.6, delay: 1.7 }}
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
       >
-        <motion.button
-          onClick={scrollToNext}
-          className="text-gray-600 hover:text-blue-600 transition-colors duration-300"
-          animate={{
-            y: [0, 10, 0],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
-          <ChevronDown size={32} />
-        </motion.button>
+        {animationsEnabled ? (
+          <motion.button
+            onClick={scrollToNext}
+            className="text-gray-600 hover:text-blue-600 transition-colors duration-300 p-2 rounded-full hover:bg-white/20"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            animate={{
+              y: [0, 10, 0],
+            }}
+            transition={{
+              y: {
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+              scale: {
+                duration: 0.2,
+              }
+            }}
+          >
+            <ChevronDown size={32} />
+          </motion.button>
+        ) : (
+          <button
+            onClick={scrollToNext}
+            className="text-gray-600 hover:text-blue-600 transition-colors duration-300 p-2 rounded-full hover:bg-white/20 animate-bounce"
+          >
+            <ChevronDown size={32} />
+          </button>
+        )}
       </motion.div>
-
 
     </section>
   );

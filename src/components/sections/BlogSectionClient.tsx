@@ -25,10 +25,12 @@ export function BlogSectionClient({ articles, displayArticles }: BlogSectionClie
           className="text-center mb-12"
         >
           <div className="flex items-center justify-center gap-3 mb-4">
-            <BookOpen className="text-sky-600" size={32} />
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-              技術ブログ
-            </h2>
+            <Link href="/articles" className="flex items-center gap-2">
+              <BookOpen className="text-sky-600" size={32} />
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+                技術ブログ
+              </h2>
+            </Link>
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             学習過程や技術的な挑戦について記録しています

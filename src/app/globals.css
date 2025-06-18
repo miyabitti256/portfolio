@@ -243,7 +243,7 @@
   }
 
   .package-json-style {
-    @apply bg-gray-900 border border-gray-700 rounded-lg p-6 font-mono text-gray-100;
+    @apply bg-gray-900 border border-gray-700 rounded-lg p-3 sm:p-4 md:p-6 font-mono text-gray-100 overflow-x-auto;
   }
 
   .vscode-tab {

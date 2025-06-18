@@ -26,30 +26,48 @@ export function PageTransition({ children }: PageTransitionProps) {
   const [showTerminal, setShowTerminal] = useState(false);
   const [previousPathname, setPreviousPathname] = useState<string>('');
   const [shouldSkipAnimation, setShouldSkipAnimation] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const isModalActiveRef = useRef(false);
 
   // モーダル関連のルートかどうかをチェックする包括的な関数
-  const checkModalStatus = (currentPath: string, previousPath: string) => {
+  const checkModalStatus = (currentPath: string, previousPath: string, isFirstLoad: boolean) => {
+    // 初回ロード時は常にアニメーションを実行
+    if (isFirstLoad) {
+      return false;
+    }
+
+    // ホームページの場合の特別処理
+    if (currentPath === '/') {
+      // 同じパス（/から/）の場合はスキップしない
+      if (previousPath === '/') {
+        return false;
+      }
+      // モーダルから戻ってきた場合は一度だけスキップ
+      if (previousPath.includes('profile') || previousPath.includes('projects/')) {
+        // モーダル状態をリセット
+        setTimeout(() => {
+          isModalActiveRef.current = false;
+        }, 50);
+        return true;
+      }
+      return false;
+    }
+
     // 現在のパスがモーダル関連
     const currentIsModal = modalUtils.isModalRoute(currentPath) || 
-                          modalUtils.isParallelRoute(currentPath) ||
-                          currentPath.includes('profile') ||
-                          currentPath.includes('projects/');
+                          modalUtils.isParallelRoute(currentPath);
     
     // 前のパスがモーダル関連
     const previousIsModal = modalUtils.isModalRoute(previousPath) || 
-                           modalUtils.isParallelRoute(previousPath) ||
-                           previousPath.includes('profile') ||
-                           previousPath.includes('projects/');
+                           modalUtils.isParallelRoute(previousPath);
     
     // モーダル関連の遷移パターン
     const isModalTransition = modalUtils.isModalTransition(currentPath, previousPath);
     
-    // ホームページからモーダルへの遷移
-    const homeToModal = previousPath === '/' && currentIsModal;
-    
-    // モーダルからホームページへの遷移
-    const modalToHome = previousIsModal && currentPath === '/';
+    // ホームページからモーダルへの遷移（2回目以降のナビゲーション）
+    const homeToModal = previousPath === '/' && 
+                        (currentPath.includes('profile') || currentPath.includes('projects/')) &&
+                        !isFirstLoad;
     
     // URLパラメータでモーダル状態が示されている
     const hasModalParam = searchParams.has('modal');
@@ -59,23 +77,22 @@ export function PageTransition({ children }: PageTransitionProps) {
            previousIsModal || 
            isModalTransition || 
            homeToModal || 
-           modalToHome || 
-           hasModalParam ||
-           isModalActiveRef.current;
+           hasModalParam;
   };
 
   useEffect(() => {
+    // 初回ロード検知 - パスの変更が初めてかどうか
+    const isFirstLoad = isInitialLoad && previousPathname === '';
+    
     // モーダル状態をチェック
-    const shouldSkip = checkModalStatus(pathname, previousPathname);
+    const shouldSkip = checkModalStatus(pathname, previousPathname, isFirstLoad);
     
     // モーダル状態を記録
     if (pathname.includes('profile') || pathname.includes('projects/')) {
       isModalActiveRef.current = true;
-    } else if (pathname === '/') {
-      // ホームページに戻った時は少し遅れてモーダル状態をリセット
-      setTimeout(() => {
-        isModalActiveRef.current = false;
-      }, 100);
+    } else if (pathname === '/' && previousPathname !== '/') {
+      // ホームページに戻った時は即座にモーダル状態をリセット
+      isModalActiveRef.current = false;
     }
     
     setShouldSkipAnimation(shouldSkip);
@@ -85,6 +102,7 @@ export function PageTransition({ children }: PageTransitionProps) {
       console.log('PageTransition Debug:', {
         pathname,
         previousPathname,
+        isFirstLoad,
         shouldSkip,
         isModalActive: isModalActiveRef.current,
         hasModalParam: searchParams.has('modal'),
@@ -96,6 +114,7 @@ export function PageTransition({ children }: PageTransitionProps) {
       setIsLoading(false);
       setShowTerminal(false);
       setPreviousPathname(pathname);
+      setIsInitialLoad(false);
       return;
     }
 
@@ -121,12 +140,13 @@ export function PageTransition({ children }: PageTransitionProps) {
 
     // 前回のパスを更新
     setPreviousPathname(pathname);
+    setIsInitialLoad(false);
 
     return () => {
       stepTimers.forEach(clearTimeout);
       clearTimeout(completeTimer);
     };
-  }, [pathname, previousPathname, searchParams]);
+  }, [pathname, previousPathname, searchParams, isInitialLoad]);
 
   // 検索パラメータが変更された時（モーダル内でのナビゲーション等）
   useEffect(() => {

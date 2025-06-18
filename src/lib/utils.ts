@@ -183,14 +183,28 @@ export const modalUtils = {
   // モーダル経由かどうかを判定
   isModalRoute: (pathname: string): boolean => {
     // インターセプティングルート（(.)で始まるルート）を検出
-    return pathname.includes('/(.') || 
-           (pathname.includes('profile') && typeof window !== 'undefined' && window.history.length > 1) ||
-           (pathname.includes('projects/') && typeof window !== 'undefined' && window.history.length > 1);
+    return pathname.includes('/(.)') || pathname.includes('@modal');
   },
 
   // パラレルルートかどうかを判定
   isParallelRoute: (pathname: string): boolean => {
     return pathname.includes('@modal') || pathname.includes('/(.)');
+  },
+
+  // モーダル遷移かどうかを判定
+  isModalTransition: (currentPath: string, previousPath: string): boolean => {
+    // ホームページからプロフィール/プロジェクトへの遷移
+    if (previousPath === '/' && 
+        (currentPath.includes('/profile') || currentPath.includes('/projects/'))) {
+      return true;
+    }
+    
+    // モーダル内での遷移
+    if (currentPath.includes('/(.)') || currentPath.includes('@modal')) {
+      return true;
+    }
+    
+    return false;
   },
 
   // 現在のページがモーダル表示中かどうかを判定
@@ -204,13 +218,12 @@ export const modalUtils = {
     // modal=trueパラメータがあるかチェック
     return searchParams.has('modal') || 
            // またはパスがモーダル経由であることを示すパターンをチェック
-           url.pathname.includes('/(.') ||
-           // ブラウザ履歴の長さでモーダル経由を推測
-           window.history.length > 1;
+           url.pathname.includes('/(.)') ||
+           url.pathname.includes('@modal');
   },
 
   // モーダル状態をURLパラメータに設定
-  setModalParam: (isModal: boolean = true): void => {
+  setModalParam: (isModal: boolean) => {
     if (typeof window === 'undefined') return;
     
     const url = new URL(window.location.href);
@@ -220,29 +233,18 @@ export const modalUtils = {
       url.searchParams.delete('modal');
     }
     
-    // URLを更新（ページリロードなし）
     window.history.replaceState({}, '', url.toString());
   },
 
-  // 前回のパスからモーダル経由の遷移かどうかを判定
-  isModalTransition: (currentPath: string, previousPath: string): boolean => {
-    // ホームページからプロフィール・プロジェクト詳細への遷移はモーダル経由の可能性が高い
-    if (previousPath === '/' && 
-        (currentPath.includes('profile') || currentPath.includes('projects/'))) {
-      return true;
-    }
+  // モーダルを閉じる時の処理
+  closeModal: () => {
+    if (typeof window === 'undefined') return;
     
-    // インターセプティングルートの場合
-    if (currentPath.includes('/(.')) {
-      return true;
-    }
+    // URL パラメータからモーダル関連を削除
+    const url = new URL(window.location.href);
+    url.searchParams.delete('modal');
     
-    // URLパラメータでモーダル状態が示されている場合
-    if (typeof window !== 'undefined') {
-      const url = new URL(window.location.href);
-      return url.searchParams.has('modal');
-    }
-    
-    return false;
+    // ホームページに戻る
+    window.history.replaceState({}, '', '/');
   },
 };

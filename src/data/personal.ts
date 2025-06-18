@@ -1,14 +1,14 @@
 export const personalInfo = {
   name: "miyabitti",
   nameJa: "みやびっち",
-  title: "Web Developer",
-  subtitle: "学習と創造を続ける開発者",
+  title: "ニート",
+  subtitle: "趣味でプログラミングをしている者だ(現場未経験)",
   description: "WordPressから始まり、JavaScript/TypeScriptの世界に魅力を感じ、現代的な技術スタックでのフルスタック開発を学んでいます。",
   location: "Japan",
   
-  // Hero Section用のメッセージ（控えめ）
+  // Hero Section用のメッセージ
   heroMessages: {
-    primary: "学習と創造を続けるWeb開発者",
+    primary: "学習と創造を続けるWeb開発者になりたい人",
     secondary: "技術で価値を生み出すことを目指しています",
     alternative: "未経験からスタートした学習の軌跡",
   },
@@ -19,16 +19,24 @@ export const personalInfo = {
       id: "wordpress-start",
       period: "きっかけ",
       title: "WordPressサイト制作への挑戦",
-      description: "プログラミングへの興味からWordPressサイト制作を依頼されるも、PHPよりもJavaScript/TypeScriptに魅力を感じる",
+      description: "プログラミングへの興味から知り合いにWordPressサイト制作を依頼されるも、PHPよりもJavaScriptに魅力を感じる",
       status: "completed",
       color: "#f59e0b"
     },
     {
       id: "js-learning",
       period: "基礎学習",
-      title: "JavaScript/TypeScript学習開始",
-      description: "PHPに興味を持てずJavaScript/TypeScriptから学習をスタート。モダンな開発環境と構文に魅力を感じる",
+      title: "JavaScript学習開始",
+      description: "PHP(WordPress)に興味を持てずJavaScriptから学習をスタート。モダンな開発環境と構文に魅力を感じる",
       status: "completed", 
+      color: "#10b981"
+    },
+    {
+      id: "ts-learning",
+      period: "TypeScript学習",
+      title: "TypeScript学習",
+      description: "JavaScriptの型安全性を高めるためTypeScriptを学習。型安全な開発を実現",
+      status: "completed",
       color: "#10b981"
     },
     {
@@ -43,7 +51,7 @@ export const personalInfo = {
       id: "discord-bot",
       period: "実践プロジェクト",
       title: "Discord Bot開発",
-      description: "学習したスキルを活かし、Discord.jsを使用したBotを開発。バックエンド開発の基礎を学ぶ",
+      description: "学習したスキルを活かし、Discord.jsを使用したBotを開発。Bot開発の基礎を学ぶ",
       status: "completed",
       color: "#8b5cf6"
     },
@@ -51,7 +59,7 @@ export const personalInfo = {
       id: "fullstack-app",
       period: "フルスタック開発",
       title: "時報G - フルスタックアプリ開発",
-      description: "Discord Bot + Hono API + Next.js + Supabaseを組み合わせたフルスタック構成でWebアプリケーションを開発",
+      description: "Discord Bot + Hono API + Next.js + Supabaseを組み合わせたフルスタック構成でWebアプリケーションを開発。フロントエンドからバックエンドまでを学ぶ",
       status: "completed",
       color: "#06b6d4"
     },
@@ -79,6 +87,7 @@ export const personalInfo = {
     },
     discord: {
       username: "miyabitti256",
+      url: "https://discord.com/users/686898398305189891",
       display: "@miyabitti256"
     },
     zenn: {
@@ -98,10 +107,9 @@ export const personalInfo = {
   
   // アピールポイント
   strengths: [
-    "学習意欲の高さ - 新しい技術への積極的な取り組み",
-    "実践経験 - 理論だけでなく実際にアプリケーションを開発",
+    "学習意欲の高さ - 新しい技術のキャッチアップを積極的に行う",
+    "実践経験 - 規模は小さいが実際にアプリケーションを開発",
     "現代的技術スタック - 最新のベストプラクティスに基づく開発",
-    "問題解決能力 - Discord Botからフルスタックアプリまでの幅広い実装経験"
   ]
 };
 

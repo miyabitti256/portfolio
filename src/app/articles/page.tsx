@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 
 export default async function ArticlesPage() {
   const allArticles = await getAllArticles();
-  const featuredArticles = allArticles.filter(article => article.featured);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 to-cyan-50">
@@ -43,7 +42,7 @@ export default async function ArticlesPage() {
             </p>
             
             <div className="mt-6 text-sm text-gray-500">
-              全{featuredArticles.length}件の記事
+              全{allArticles.length}件の記事
             </div>
           </div>
         </div>
@@ -52,9 +51,9 @@ export default async function ArticlesPage() {
       {/* 記事一覧 */}
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-6">
-          {featuredArticles.length > 0 ? (
+          {allArticles.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredArticles.map((article, index) => (
+              {allArticles.map((article, index) => (
                 <ArticleCard key={article.id} article={article} index={index} />
               ))}
             </div>
