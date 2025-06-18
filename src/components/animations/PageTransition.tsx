@@ -1,13 +1,8 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { ReactNode, useState, useEffect, useRef } from 'react';
-import { modalUtils } from '@/lib/utils';
-
-interface PageTransitionProps {
-  children: ReactNode;
-}
 
 // ターミナル風ローディングメッセージ
 const LOADING_MESSAGES = [
@@ -18,146 +13,95 @@ const LOADING_MESSAGES = [
   '$ ✓ Build completed',
 ] as const;
 
+interface PageTransitionProps {
+  children: ReactNode;
+}
+
 export function PageTransition({ children }: PageTransitionProps) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isLoading, setIsLoading] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(true); // 初回ロードはローディングから開始
   const [loadingStep, setLoadingStep] = useState(0);
-  const [showTerminal, setShowTerminal] = useState(false);
-  const [previousPathname, setPreviousPathname] = useState<string>('');
+  const [showTerminal, setShowTerminal] = useState(true);
   const [shouldSkipAnimation, setShouldSkipAnimation] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const isModalActiveRef = useRef(false);
+  const [pageKey, setPageKey] = useState(pathname); // ページコンポーネントの再マウントを制御するキー
 
-  // モーダル関連のルートかどうかをチェックする包括的な関数
-  const checkModalStatus = (currentPath: string, previousPath: string, isFirstLoad: boolean) => {
-    // 初回ロード時は常にアニメーションを実行
-    if (isFirstLoad) {
-      return false;
-    }
+  const previousPathnameRef = useRef<string>('/'); // 初期値をルートに設定
+  const isInitialLoadRef = useRef(true);
+  const animationTimerRef = useRef<NodeJS.Timeout[]>([]);
+  const completeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-    // ホームページの場合の特別処理
-    if (currentPath === '/') {
-      // 同じパス（/から/）の場合はスキップしない
-      if (previousPath === '/') {
-        return false;
-      }
-      // モーダルから戻ってきた場合は一度だけスキップ
-      if (previousPath.includes('profile') || previousPath.includes('projects/')) {
-        // モーダル状態をリセット
-        setTimeout(() => {
-          isModalActiveRef.current = false;
-        }, 50);
-        return true;
-      }
-      return false;
-    }
-
-    // 現在のパスがモーダル関連
-    const currentIsModal = modalUtils.isModalRoute(currentPath) || 
-                          modalUtils.isParallelRoute(currentPath);
-    
-    // 前のパスがモーダル関連
-    const previousIsModal = modalUtils.isModalRoute(previousPath) || 
-                           modalUtils.isParallelRoute(previousPath);
-    
-    // モーダル関連の遷移パターン
-    const isModalTransition = modalUtils.isModalTransition(currentPath, previousPath);
-    
-    // ホームページからモーダルへの遷移（2回目以降のナビゲーション）
-    const homeToModal = previousPath === '/' && 
-                        (currentPath.includes('profile') || currentPath.includes('projects/')) &&
-                        !isFirstLoad;
-    
-    // URLパラメータでモーダル状態が示されている
-    const hasModalParam = searchParams.has('modal');
-    
-    // いずれかの条件に当てはまればアニメーションをスキップ
-    return currentIsModal || 
-           previousIsModal || 
-           isModalTransition || 
-           homeToModal || 
-           hasModalParam;
-  };
+  // モーダルとして扱われるパスか判定
+  const isModalPath = (path: string) => /^\/(profile|projects\/[^/]+)/.test(path);
 
   useEffect(() => {
-    // 初回ロード検知 - パスの変更が初めてかどうか
-    const isFirstLoad = isInitialLoad && previousPathname === '';
-    
-    // モーダル状態をチェック
-    const shouldSkip = checkModalStatus(pathname, previousPathname, isFirstLoad);
-    
-    // モーダル状態を記録
-    if (pathname.includes('profile') || pathname.includes('projects/')) {
-      isModalActiveRef.current = true;
-    } else if (pathname === '/' && previousPathname !== '/') {
-      // ホームページに戻った時は即座にモーダル状態をリセット
-      isModalActiveRef.current = false;
+    // すべての既存タイマーをクリア
+    animationTimerRef.current.forEach(clearTimeout);
+    if (completeTimerRef.current) clearTimeout(completeTimerRef.current);
+
+    const previousPathname = previousPathnameRef.current;
+
+    // パスが変わっていない場合は何もしない
+    if (pathname === previousPathname && !isInitialLoadRef.current) {
+      return;
+    }
+
+    let skip = false;
+    if (isInitialLoadRef.current) {
+      // 初回ロードはアニメーション実行
+      skip = false;
+    } else {
+      // モーダル関連の遷移かを判定
+      const fromHomeToModal = previousPathname === '/' && isModalPath(pathname);
+      const fromModalToHome = isModalPath(previousPathname) && pathname === '/';
+      const modalToModal = isModalPath(previousPathname) && isModalPath(pathname);
+
+      if (fromHomeToModal || fromModalToHome || modalToModal) {
+        skip = true;
+      }
     }
     
-    setShouldSkipAnimation(shouldSkip);
-    
-    // デバッグ用ログ（開発時のみ）
+    setShouldSkipAnimation(skip);
+
     if (process.env.NODE_ENV === 'development') {
       console.log('PageTransition Debug:', {
         pathname,
         previousPathname,
-        isFirstLoad,
-        shouldSkip,
-        isModalActive: isModalActiveRef.current,
-        hasModalParam: searchParams.has('modal'),
+        isInitialLoad: isInitialLoadRef.current,
+        shouldSkip: skip,
+        pageKey,
       });
     }
     
-    // アニメーションをスキップする場合は早期リターン
-    if (shouldSkip) {
+    if (skip) {
       setIsLoading(false);
       setShowTerminal(false);
-      setPreviousPathname(pathname);
-      setIsInitialLoad(false);
-      return;
+    } else {
+      window.scrollTo(0, 0); // ページ遷移時にスクロールをトップに戻す
+      setPageKey(pathname); // 通常の遷移の時だけキーを更新する
+      setIsLoading(true);
+      setShowTerminal(true);
+      setLoadingStep(0);
+
+      animationTimerRef.current = LOADING_MESSAGES.map((_, index) =>
+        setTimeout(() => {
+          setLoadingStep(index);
+        }, index * 150)
+      );
+
+      completeTimerRef.current = setTimeout(() => {
+        setIsLoading(false);
+        setTimeout(() => {
+          setShowTerminal(false);
+        }, 200);
+      }, LOADING_MESSAGES.length * 150 + 300);
     }
 
-    // 通常のページ遷移時のローディング制御
-    setIsLoading(true);
-    setShowTerminal(true);
-    setLoadingStep(0);
-
-    // ローディングステップの進行
-    const stepTimers = LOADING_MESSAGES.map((_, index) => 
-      setTimeout(() => {
-        setLoadingStep(index);
-      }, index * 150)
-    );
-
-    // ローディング完了
-    const completeTimer = setTimeout(() => {
-      setIsLoading(false);
-      setTimeout(() => {
-        setShowTerminal(false);
-      }, 200);
-    }, LOADING_MESSAGES.length * 150 + 300);
-
-    // 前回のパスを更新
-    setPreviousPathname(pathname);
-    setIsInitialLoad(false);
-
-    return () => {
-      stepTimers.forEach(clearTimeout);
-      clearTimeout(completeTimer);
-    };
-  }, [pathname, previousPathname, searchParams, isInitialLoad]);
-
-  // 検索パラメータが変更された時（モーダル内でのナビゲーション等）
-  useEffect(() => {
-    // モーダルパラメータがある場合は即座にアニメーションをスキップ
-    const hasModalParam = searchParams.has('modal');
-    if (hasModalParam) {
-      setShouldSkipAnimation(true);
-      setIsLoading(false);
-      setShowTerminal(false);
-    }
-  }, [searchParams]);
+    // 状態を更新
+    previousPathnameRef.current = pathname;
+    isInitialLoadRef.current = false;
+    
+  }, [pathname]);
 
   return (
     <>
@@ -242,7 +186,7 @@ export function PageTransition({ children }: PageTransitionProps) {
       <div className={`w-full ${isLoading && !shouldSkipAnimation ? 'opacity-0 pointer-events-none' : ''}`}>
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={shouldSkipAnimation ? `${pathname}-static` : pathname}
+            key={pageKey}
             {...(shouldSkipAnimation ? {
               // モーダル時はアニメーションプロパティを設定しない
             } : {

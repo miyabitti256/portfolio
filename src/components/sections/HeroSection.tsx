@@ -8,6 +8,35 @@ import { GitHubIcon, XIcon, ZennIcon } from '@/components/ui/social-icons';
 import { heroAnimations } from '@/data/animations';
 import { personalInfo } from '@/data/personal';
 
+//   hidden: { opacity: 0, scale: 0, y: 10 },
+//   visible: (i: number) => {
+//     const isLarge = i % 5 === 0;
+//     return {
+//       opacity: [0.7, 1, 0.7],
+//       y: [0, isLarge ? -30 : -25, 0],
+//       scale: [1, isLarge ? 1.3 : 1.2, 1],
+//       transition: {
+//         delay: i * 0.08,
+//         opacity: {
+//           duration: isLarge ? 3 : 2.5,
+//           repeat: Infinity,
+//           ease: 'easeInOut',
+//         },
+//         y: {
+//           duration: isLarge ? 5 : 4,
+//           repeat: Infinity,
+//           ease: 'easeInOut',
+//         },
+//         scale: {
+//           duration: isLarge ? 4 : 3,
+//           repeat: Infinity,
+//           ease: 'easeInOut',
+//         },
+//       },
+//     };
+//   },
+// };
+
 // パーティクルの固定位置配列（Hydration Mismatch対策）
 const PARTICLE_POSITIONS = [
   { left: 10, top: 20 },
@@ -47,7 +76,6 @@ export default function HeroSection() {
   const [animationsEnabled, setAnimationsEnabled] = useState(true);
 
   useEffect(() => {
-    // 強制的にアニメーションを開始（PageTransitionに依存しない）
     const startAnimation = () => {
       setIsVisible(true);
       setParticlesVisible(true);
@@ -60,60 +88,39 @@ export default function HeroSection() {
       return () => clearTimeout(phaseTimer);
     };
 
-    // 短い遅延の後にアニメーション開始
-    const initTimer = setTimeout(startAnimation, 200);
-
-    // フォールバック：アニメーションが動作しない場合の検知
-    const fallbackTimer = setTimeout(() => {
-      if (!isVisible) {
-        console.warn('Animations seem to be blocked, enabling fallback');
-        setAnimationsEnabled(false);
-        setIsVisible(true);
-        setParticlesVisible(true);
-      }
-    }, 2000);
+    // PageTransitionのアニメーション完了を待つ (約1.8秒)
+    const initTimer = setTimeout(startAnimation, 1800);
 
     return () => {
       clearTimeout(initTimer);
-      clearTimeout(fallbackTimer);
     };
-  }, []); // 依存配列を空にして、コンポーネント初期化時に1回だけ実行
+  }, []);
 
-  const scrollToNext = () => {
-    const nextSection = document.querySelector('#projects');
+  const smoothScrollTo = (selector: string) => {
+    const section = document.querySelector(selector);
     
     if (process.env.NODE_ENV === 'development') {
       console.log('Scroll Debug:', {
-        element: nextSection,
-        elementExists: !!nextSection,
-        elementOffset: nextSection?.getBoundingClientRect(),
-        currentScroll: window.scrollY,
+        selector: selector,
+        element: section,
+        elementExists: !!section,
       });
     }
 
-    if (nextSection) {
-      // より確実なスクロール実装
-      const targetPosition = (nextSection as HTMLElement).offsetTop - 80; // ヘッダー分のオフセット
+    if (section) {
+      const targetPosition = (section as HTMLElement).offsetTop;
       
       window.scrollTo({
         top: targetPosition,
         behavior: 'smooth'
       });
-      
-      // フォールバック：scrollToが動作しない場合
-      setTimeout(() => {
-        if (Math.abs(window.scrollY - targetPosition) > 50) {
-          nextSection.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start',
-            inline: 'nearest'
-          });
-        }
-      }, 100);
     } else {
-      console.warn('Projects section not found');
+      console.warn(`Section with selector "${selector}" not found`);
     }
   };
+
+  const scrollToProjects = () => smoothScrollTo('#projects');
+  const scrollToNext = () => smoothScrollTo('#about');
 
   return (
     <section className="relative min-h-screen flex items-center justify-center hero-gradient overflow-hidden">
@@ -156,29 +163,18 @@ export default function HeroSection() {
                 top: `${position.top}%`,
                 boxShadow: glowStyle,
               }}
-              initial={{ opacity: 0, scale: 0, y: 10 }}
-              animate={{
+              initial={{ opacity: 0, scale: 0 }}
+              animate={particlesVisible ? {
                 opacity: [0.7, 1, 0.7],
-                y: [0, isLarge ? -30 : -25, 0],
+                y: [0, isLarge ? -30 : -25],
                 scale: [1, isLarge ? 1.3 : 1.2, 1],
-              }}
+              } : {}}
               transition={{
                 duration: isLarge ? 5 : 4,
                 repeat: Infinity,
-                ease: "easeInOut",
+                repeatType: "mirror",
                 delay: i * 0.08,
-                opacity: {
-                  duration: isLarge ? 3 : 2.5,
-                  repeat: Infinity,
-                },
-                y: {
-                  duration: isLarge ? 5 : 4,
-                  repeat: Infinity,
-                },
-                scale: {
-                  duration: isLarge ? 4 : 3,
-                  repeat: Infinity,
-                }
+                ease: "easeInOut",
               }}
             />
           );
@@ -285,7 +281,7 @@ export default function HeroSection() {
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
           >
             <button
-              onClick={scrollToNext}
+              onClick={scrollToProjects}
               className="px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg hover:from-primary-600 hover:to-primary-700 hover:shadow-xl transition-all duration-300 hover:scale-105 font-zen-maru shadow-lg"
             >
               作品を見る
@@ -332,44 +328,17 @@ export default function HeroSection() {
       </div>
 
       {/* スクロールインジケーター */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: currentPhase >= 1 ? 1 : 0, y: currentPhase >= 1 ? 0 : 20 }}
-        transition={{ duration: 0.6, delay: 1.7 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+      <div
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30"
       >
-        {animationsEnabled ? (
-          <motion.button
-            onClick={scrollToNext}
-            className="text-gray-600 hover:text-blue-600 transition-colors duration-300 p-2 rounded-full hover:bg-white/20"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            animate={{
-              y: [0, 10, 0],
-            }}
-            transition={{
-              y: {
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              },
-              scale: {
-                duration: 0.2,
-              }
-            }}
-          >
-            <ChevronDown size={32} />
-          </motion.button>
-        ) : (
-          <button
-            onClick={scrollToNext}
-            className="text-gray-600 hover:text-blue-600 transition-colors duration-300 p-2 rounded-full hover:bg-white/20 animate-bounce"
-          >
-            <ChevronDown size={32} />
-          </button>
-        )}
-      </motion.div>
-
+        <button
+          onClick={scrollToNext}
+          className="text-gray-600 hover:text-blue-600 transition-colors duration-300 p-2 rounded-full hover:bg-white/20 animate-bounce"
+          aria-label="次のセクションへスクロール"
+        >
+          <ChevronDown size={32} />
+        </button>
+      </div>
     </section>
   );
 } 
