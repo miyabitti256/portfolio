@@ -277,4 +277,17 @@ export interface LazyLoadOptions {
   rootMargin?: string;
   triggerOnce?: boolean;
   disabled?: boolean;
+}
+
+export interface Article {
+  id: string;
+  title: string;
+  description: string;
+  content: string;
+  publishedAt: string;
+  updatedAt?: string;
+  tags: string[];
+  readingTime: number;
+  featured: boolean;
+  slug: string;
 } 

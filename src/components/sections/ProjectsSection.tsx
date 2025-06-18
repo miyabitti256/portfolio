@@ -2,33 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
-import Image from 'next/image';
 import { 
-  ExternalLink, 
   Github, 
   FileText, 
-  Code, 
-  Server, 
-  Database,
   Globe,
-  Calendar,
-  CheckCircle,
-  Clock,
-  PlayCircle,
   Package,
-  BookOpen,
-  FolderOpen
+  BookOpen
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { mainProject, subProjects, projectCategories } from '@/data/projects';
-import type { Project } from '@/data/projects';
+import { mainProject } from '@/data/projects';
 import VSCodeEditor from '@/components/engineer-ui/VSCodeEditor';
 
 export default function ProjectsSection() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
   const [isVisible, setIsVisible] = useState(false);
   const [currentVSCodeTab, setCurrentVSCodeTab] = useState('');
 
@@ -47,10 +32,6 @@ export default function ProjectsSection() {
 
     return () => observer.disconnect();
   }, []);
-
-  const filteredProjects = selectedCategory === 'all' 
-    ? subProjects 
-    : subProjects.filter(project => project.category === selectedCategory);
 
   // VS Code風エディター用のファイル構造
   const projectFiles = [
@@ -203,32 +184,6 @@ export default function ProjectsSection() {
         }
       ];
 
-  const getStatusIcon = (status: Project['status']) => {
-    switch (status) {
-      case 'completed':
-        return <CheckCircle size={16} className="text-green-500" />;
-      case 'in-progress':
-        return <Clock size={16} className="text-blue-500" />;
-      case 'planned':
-        return <PlayCircle size={16} className="text-gray-500" />;
-      default:
-        return null;
-    }
-  };
-
-  const getStatusText = (status: Project['status']) => {
-    switch (status) {
-      case 'completed':
-        return '完成';
-      case 'in-progress':
-        return '開発中';
-      case 'planned':
-        return '予定';
-      default:
-        return '';
-    }
-  };
-
 
 
   return (
@@ -308,121 +263,7 @@ export default function ProjectsSection() {
           </div>
         </motion.div>
 
-        {/* サブプロジェクト */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 40 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <div className="mb-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6 font-zen-maru">
-              その他のプロジェクト
-            </h3>
-            
-            {/* カテゴリフィルター */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              {projectCategories.map((category) => (
-                <Button
-                  key={category.id}
-                  variant={selectedCategory === category.id ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category.id)}
-                  className="font-zen-maru"
-                >
-                  {category.name}
-                </Button>
-              ))}
-            </div>
-          </div>
 
-          {/* プロジェクトグリッド */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {filteredProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
-                transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-              >
-                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg font-zen-maru flex items-center gap-2">
-                          {project.title}
-                          {getStatusIcon(project.status)}
-                        </CardTitle>
-                        <CardDescription className="mt-2 font-zen-maru">
-                          {project.description}
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent>
-                    <div className="space-y-4">
-                      {/* 技術スタック */}
-                      <div className="flex flex-wrap gap-1">
-                        {project.technologies.slice(0, 6).map((tech, techIndex) => (
-                          <Badge key={techIndex} variant="secondary" className="text-xs">
-                            {tech}
-                          </Badge>
-                        ))}
-                        {project.technologies.length > 6 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{project.technologies.length - 6}
-                          </Badge>
-                        )}
-                      </div>
-
-                      {/* 主な特徴 */}
-                      {project.highlights && project.highlights.length > 0 && (
-                        <div>
-                          <h5 className="text-sm font-medium text-gray-900 mb-2 font-zen-maru">
-                            主な特徴
-                          </h5>
-                          <ul className="space-y-1">
-                            {project.highlights.slice(0, 3).map((highlight, hIndex) => (
-                              <li key={hIndex} className="flex items-center gap-2 text-xs text-gray-600 font-zen-maru">
-                                <CheckCircle size={12} className="text-green-500 flex-shrink-0" />
-                                {highlight}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {/* リンク */}
-                      <div className="flex gap-2 pt-2">
-                        {project.githubUrl && (
-                          <Button variant="outline" size="sm" asChild>
-                            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                              <Github size={14} className="mr-1" />
-                              GitHub
-                            </a>
-                          </Button>
-                        )}
-                        {project.liveUrl && (
-                          <Button variant="outline" size="sm" asChild>
-                            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink size={14} className="mr-1" />
-                              Live
-                            </a>
-                          </Button>
-                        )}
-                        <Link href={`/projects/${project.id}`} passHref>
-                          <Button variant="ghost" size="sm">
-                            詳細
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
       </div>
     </section>
   );

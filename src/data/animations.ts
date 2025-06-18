@@ -130,6 +130,13 @@ export const engineerUIAnimations = {
 
 // ページ遷移アニメーション
 export const pageTransitions = {
+  // エンジニア感のあるページ遷移（ターミナル風ローディング付き）
+  terminal: {
+    initial: { opacity: 0, scale: 0.98, filter: 'blur(4px)' },
+    animate: { opacity: 1, scale: 1, filter: 'blur(0px)' },
+    exit: { opacity: 0, scale: 1.02, filter: 'blur(2px)' },
+    transition: { duration: 0.6, ease: "easeOut" }
+  },
   slideUp: {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },

@@ -89,88 +89,88 @@ export const mainProject: Project = {
   }
 };
 
-export const subProjects: Project[] = [
-  {
-    id: "portfolio-site",
-    title: "ポートフォリオサイト",
-    titleEn: "Portfolio Site",
-    description: "就職活動用のモダンなポートフォリオサイト（現在開発中）",
-    longDescription: `
-      Next.js 15とFramer Motionを使用した、エンジニア感のあるポートフォリオサイトです。
-      VS Code風のタブUI、Git commit履歴風の学習経歴表示、package.json風のスキル表示など、
-      エンジニアらしいUIを意識して設計・実装しています。
-    `,
-    technologies: [
-      "Next.js 15", "React 19", "TypeScript", "Framer Motion", 
-      "shadcn/ui", "Tailwind CSS", "Lucide React", "Vercel"
-    ],
-    category: "frontend",
-    featured: true,
-    status: "in-progress",
-    githubUrl: "https://github.com/miyabitti256/portfolio",
-    startDate: "2025-06",
+// export const subProjects: Project[] = [
+//   {
+//     id: "portfolio-site",
+//     title: "ポートフォリオサイト",
+//     titleEn: "Portfolio Site",
+//     description: "就職活動用のモダンなポートフォリオサイト（現在開発中）",
+//     longDescription: `
+//       Next.js 15とFramer Motionを使用した、エンジニア感のあるポートフォリオサイトです。
+//       VS Code風のタブUI、Git commit履歴風の学習経歴表示、package.json風のスキル表示など、
+//       エンジニアらしいUIを意識して設計・実装しています。
+//     `,
+//     technologies: [
+//       "Next.js 15", "React 19", "TypeScript", "Framer Motion", 
+//       "shadcn/ui", "Tailwind CSS", "Lucide React", "Vercel"
+//     ],
+//     category: "frontend",
+//     featured: true,
+//     status: "in-progress",
+//     githubUrl: "https://github.com/miyabitti256/portfolio",
+//     startDate: "2025-06",
     
-    highlights: [
-      "Parallel/Intercepting Routes活用",
-      "Server Component優先設計",
-      "リッチアニメーション実装",
-      "エンジニア感のあるUI要素",
-      "レスポンシブデザイン"
-    ],
+//     highlights: [
+//       "Parallel/Intercepting Routes活用",
+//       "Server Component優先設計",
+//       "リッチアニメーション実装",
+//       "エンジニア感のあるUI要素",
+//       "レスポンシブデザイン"
+//     ],
     
-    challenges: [
-      "Framer Motionでの複雑なアニメーション",
-      "Next.js 15の新機能活用",
-      "Server/Client Component設計",
-      "パフォーマンス最適化"
-    ],
+//     challenges: [
+//       "Framer Motionでの複雑なアニメーション",
+//       "Next.js 15の新機能活用",
+//       "Server/Client Component設計",
+//       "パフォーマンス最適化"
+//     ],
     
-    learnings: [
-      "Next.js 15の高度な機能",
-      "Framer Motionによるアニメーション設計",
-      "モダンなフロントエンド設計手法",
-      "UX/UIデザインの実装"
-    ]
-  },
+//     learnings: [
+//       "Next.js 15の高度な機能",
+//       "Framer Motionによるアニメーション設計",
+//       "モダンなフロントエンド設計手法",
+//       "UX/UIデザインの実装"
+//     ]
+//   },
   
-  {
-    id: "discord-bot-basic",
-    title: "Discord Bot（基礎版）",
-    titleEn: "Discord Bot (Basic)",
-    description: "Discord.jsを学習するために作成した基本的なDiscord Bot",
-    longDescription: `
-      プログラミング学習の一環として開発したDiscord Botです。
-      基本的なコマンド処理、メッセージ送信、ユーザー情報取得などの
-      Discord APIの基礎機能を実装しました。
-    `,
-    technologies: ["Node.js", "Discord.js", "JavaScript"],
-    category: "backend",
-    featured: false,
-    status: "completed",
-    startDate: "2024-12",
-    endDate: "2025-01",
+//   {
+//     id: "discord-bot-basic",
+//     title: "Discord Bot（基礎版）",
+//     titleEn: "Discord Bot (Basic)",
+//     description: "Discord.jsを学習するために作成した基本的なDiscord Bot",
+//     longDescription: `
+//       プログラミング学習の一環として開発したDiscord Botです。
+//       基本的なコマンド処理、メッセージ送信、ユーザー情報取得などの
+//       Discord APIの基礎機能を実装しました。
+//     `,
+//     technologies: ["Node.js", "Discord.js", "JavaScript"],
+//     category: "backend",
+//     featured: false,
+//     status: "completed",
+//     startDate: "2024-12",
+//     endDate: "2025-01",
     
-    highlights: [
-      "Discord API基礎の習得",
-      "非同期処理の理解",
-      "コマンドパターンの実装"
-    ],
+//     highlights: [
+//       "Discord API基礎の習得",
+//       "非同期処理の理解",
+//       "コマンドパターンの実装"
+//     ],
     
-    challenges: [
-      "Discord APIの理解",
-      "非同期処理の扱い",
-      "エラーハンドリング"
-    ],
+//     challenges: [
+//       "Discord APIの理解",
+//       "非同期処理の扱い",
+//       "エラーハンドリング"
+//     ],
     
-    learnings: [
-      "Discord.jsライブラリの使用方法",
-      "非同期プログラミングの基礎",
-      "APIドキュメントの読み方"
-    ]
-  }
-];
+//     learnings: [
+//       "Discord.jsライブラリの使用方法",
+//       "非同期プログラミングの基礎",
+//       "APIドキュメントの読み方"
+//     ]
+//   }
+// ];
 
-export const allProjects = [mainProject, ...subProjects];
+export const allProjects = [mainProject];
 
 // プロジェクトフィルタリング用の関数
 export const getProjectsByCategory = (category: string) => {

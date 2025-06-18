@@ -55,8 +55,19 @@ export const ANIMATION_CONFIG = {
   
   // ページ遷移
   pageTransition: {
-    duration: 0.4,
-    ease: "easeInOut",
+    duration: 0.6,
+    ease: "easeOut",
+    terminalLoading: {
+      stepDelay: 150,
+      completionDelay: 300,
+      messages: [
+        '$ cd /portfolio',
+        '$ npm run build',
+        '$ Loading components...',
+        '$ Rendering page...',
+        '$ ✓ Build completed',
+      ],
+    },
   },
   
   // ホバーエフェクト

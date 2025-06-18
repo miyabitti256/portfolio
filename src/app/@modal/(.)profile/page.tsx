@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { 
   Dialog, 
   DialogContent, 
@@ -9,12 +10,24 @@ import {
   DialogDescription 
 } from '@/components/ui/dialog';
 import { ProfileContent } from '@/components/modals/ProfileContent';
+import { modalUtils } from '@/lib/utils';
 
 export default function ProfileModalPage() {
   const router = useRouter();
 
+  // モーダル表示時にパラメータを設定
+  useEffect(() => {
+    modalUtils.setModalParam(true);
+    
+    return () => {
+      // クリーンアップ時にパラメータを削除
+      modalUtils.setModalParam(false);
+    };
+  }, []);
+
   const handleOpenChange = (open: boolean) => {
     if (!open) {
+      modalUtils.setModalParam(false);
       router.back();
     }
   };
