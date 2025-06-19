@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Zen_Maru_Gothic } from "next/font/google";
 import { PageTransition } from "@/components/animations/PageTransition";
 import "./globals.css";
 
@@ -13,8 +13,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const zenMaruGothic = Zen_Maru_Gothic({
+  variable: "--font-zen-maru",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700", "900"],
+});
+
 export const metadata: Metadata = {
-  title: "みやびっち | フロントエンドエンジニア志望のポートフォリオ",
+  title: "フロントエンドエンジニア志望のポートフォリオ",
   description: "JavaScript/TypeScript/React/Next.jsを学習中のフロントエンドエンジニア志望者のポートフォリオサイトです。Discord Bot開発やフルスタック開発の経験があります。",
 };
 
@@ -27,14 +33,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@300;400;500;700;900&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${zenMaruGothic.variable} antialiased`}
         suppressContentEditableWarning
       >
         <PageTransition>
