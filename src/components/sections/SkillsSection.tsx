@@ -81,7 +81,7 @@ export default function SkillsSection() {
               Skills & Technologies
             </h2>
             <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto font-zen-maru px-4">
-              これまでの学習で習得した技術スタックと、実際のプロジェクトでの経験レベルを可視化しています。
+              これまでの学習で習得した技術スタックと、実際のプロジェクトでの経験レベルを可視化しています。※習熟度はあくまでも個人の主観です。自信過剰です。
             </p>
           </motion.div>
 

@@ -10,40 +10,40 @@ featured: true
 
 ## はじめに
 
-就職活動に向けて、自分の技術力と学習能力をアピールできるポートフォリオサイトを作成しました。単なる情報を羅列するだけでなく、**エンジニア感のあるインタラクティブなUI**と**最新技術の積極的な活用**にこだわりました。
+フロントエンドエンジニア志望として、自分の技術力と学習能力をアピールできるポートフォリオサイトを作成しました。単なる情報を羅列するだけでなく、**エンジニア感のあるインタラクティブなUI**と**実践的な技術の活用**にこだわりました。
 
 本記事では、このポートフォリオサイトの技術的な実装内容、選択した技術スタックの理由、開発過程で得られた学びについて詳しく解説します。
 
-## 🎯 プロジェクト概要
+## プロジェクト概要
 
 ### 開発動機
 
-WordPress → PHP に興味を持てず → JavaScript/TypeScriptから学習を開始した経緯から、**Web系エンジニアとしての技術力**を具体的に示す必要がありました。特に以下の点を重視しています：
+JavaScriptを少し触った程度の初学者から、Next.jsを中心とした現代的な技術スタックを学習してきました。このポートフォリオサイトでは、**フロントエンドエンジニアとしての技術力**を具体的に示すことを重視しています：
 
-- **現代的な技術スタックの習得**：Next.js 15、React 19、TypeScript 5の最新技術
-- **実践的な開発経験**：単純なSPAではなく、複雑なルーティングとアニメーション
+- **実践的な技術スタック**：Next.js 15、React 19、TypeScript 5の活用
+- **リアルな開発体験**：Parallel/Intercepting Routes、VS Code風UIの実装
 - **ユーザー体験の向上**：スムーズなページ遷移とインタラクティブなUI
-- **エンジニアらしさ**：VS Code風UI、ターミナル風デザインなど
+- **エンジニア感のあるデザイン**：ターミナル風UI、package.json風レイアウトなど
 
 ### サイトの特徴
 
-**🎨 エンジニア感のあるデザイン**
-- VS Code風のプロジェクト表示
-- ターミナルプロンプト風のセクションデザイン
+**エンジニア感のあるデザイン**
+- VS Code風のプロジェクト表示（ファイルツリー、タブ機能、リサイズ可能サイドバー）
+- ターミナル風のローディング画面
 - package.json風のスキル表示
-- Git commit履歴風の学習経歴表示
+- 実装プロジェクトのファイル構造表示
 
-**⚡️ 高度なNext.js機能の活用**
-- Parallel RoutesとIntercepting Routesによるモーダル実装
-- App Routerの完全活用
-- Server ComponentとClient Componentの適切な使い分け
+**Next.js App Routerの活用**
+- Parallel RoutesとIntercepting Routesによるプロフィールモーダル
+- Server ComponentとClient Componentの使い分け
+- Markdownによるブログ機能とシンタックスハイライト
 
-**🎬 リッチなアニメーション**
-- Framer Motionによる高品質なページ遷移
-- ローディング画面のターミナル風アニメーション
-- セクション間のスムーズなスクロールアニメーション
+**Framer Motionアニメーション**
+- ページ遷移時のローディングアニメーション
+- セクション表示時のフェードインアニメーション
+- VS Code風エディターのスムーズなインタラクション
 
-## 🛠️ 技術スタック
+## 技術スタック
 
 ### フロントエンド
 
@@ -53,10 +53,12 @@ WordPress → PHP に興味を持てず → JavaScript/TypeScriptから学習を
   "runtime": "React 19",
   "language": "TypeScript 5",
   "styling": "Tailwind CSS 4",
-  "components": "shadcn/ui",
-  "animation": "Framer Motion 11",
+  "components": "shadcn/ui (Radix UI)",
+  "animation": "Framer Motion 12",
   "icons": "Lucide React + Simple Icons",
-  "font": "Zen Maru Gothic"
+  "content": "Markdown + gray-matter + remark",
+  "highlighting": "highlight.js",
+  "font": "Geist + Zen Maru Gothic"
 }
 ```
 
@@ -65,7 +67,7 @@ WordPress → PHP に興味を持てず → JavaScript/TypeScriptから学習を
 ```json
 {
   "packageManager": "Bun",
-  "linting": "ESLint 9 + eslint-config-next",
+  "linting": "ESLint 9 + TypeScript ESLint",
   "deployment": "Vercel",
   "versionControl": "Git + GitHub"
 }
@@ -74,26 +76,26 @@ WordPress → PHP に興味を持てず → JavaScript/TypeScriptから学習を
 ### 技術選択の理由
 
 **Next.js 15 (App Router)**
-- 最新のApp Routerによる直感的なファイルベースルーティング
-- Parallel RoutesとIntercepting Routesでモーダル実装
-- Server ComponentとClient Componentの適切な使い分けでパフォーマンス最適化
+- App Routerによる直感的なファイルベースルーティング
+- Parallel RoutesとIntercepting Routesでプロフィールモーダル実装
+- Server ComponentとClient Componentの使い分け
 
 **TypeScript 5**
-- 型安全性による開発効率向上
-- 大規模アプリケーションでの保守性確保
-- 最新のES2023機能の活用
+- 型安全性による開発効率向上とエラー防止
+- コンポーネント間の型連携
+- React Hooks使用時の型補完
 
-**Framer Motion**
+**Framer Motion 12**
 - 宣言的なアニメーション記述
-- パフォーマンスに優れたアニメーション
-- 複雑なページ遷移アニメーションの実現
+- ページ遷移やインタラクションのスムーズなアニメーション
+- アニメーション条件分岐の制御
 
 **Tailwind CSS 4**
 - ユーティリティファーストによる高速開発
 - レスポンシブデザインの効率的な実装
-- カスタムテーマとの組み合わせ
+- カスタムクラスとの組み合わせ
 
-## 🏗️ アーキテクチャ設計
+## アーキテクチャ設計
 
 ### ディレクトリ構造
 
@@ -101,23 +103,24 @@ WordPress → PHP に興味を持てず → JavaScript/TypeScriptから学習を
 portfolio/
 ├── src/
 │   ├── app/                    # Next.js App Router
-│   │   ├── @modal/            # 🔀 Parallel Routes
-│   │   │   ├── (.)profile/    # 🎯 Intercepting Routes
-│   │   │   ├── (.)projects/   # 🎯 Intercepting Routes  
+│   │   ├── @modal/            # Parallel Routes
+│   │   │   ├── (.)profile/    # Intercepting Routes
 │   │   │   └── default.tsx    # デフォルトUI
 │   │   ├── articles/          # ブログ機能
+│   │   │   ├── [slug]/        # 動的ルート
+│   │   │   └── page.tsx       # 記事一覧
 │   │   ├── profile/           # プロフィール詳細
-│   │   ├── projects/          # プロジェクト詳細
 │   │   ├── layout.tsx         # ルートレイアウト
 │   │   └── page.tsx           # ホームページ
 │   ├── components/
-│   │   ├── animations/        # 🎬 Framer Motion
-│   │   ├── engineer-ui/       # 👨‍💻 エンジニア感のあるUI
+│   │   ├── animations/        # Framer Motion
+│   │   ├── engineer-ui/       # エンジニア感のあるUI
 │   │   ├── layout/            # レイアウト関連
 │   │   ├── modals/            # モーダル関連
 │   │   ├── sections/          # ページセクション
 │   │   └── ui/                # shadcn/ui + カスタム
 │   ├── data/                  # 静的データ
+│   │   └── projects/          # プロジェクト関連データ
 │   └── lib/                   # ユーティリティ
 ├── public/                    # 静的ファイル
 │   ├── articles/              # Markdown記事
@@ -168,7 +171,7 @@ export function AnimatedButton({ onClick }: Props) {
 }
 ```
 
-## 🎬 アニメーションシステム
+## アニメーションシステム
 
 ### ページ遷移アニメーション
 
@@ -302,7 +305,7 @@ export const sectionAnimations = {
 };
 ```
 
-## 🔀 高度なルーティング
+## 高度なルーティング
 
 ### Parallel RoutesとIntercepting Routes
 
@@ -348,20 +351,21 @@ export default function RootLayout({
 
 ### ルーティングの利点
 
-**1. SEO対応**
-- 直接URLアクセス時は通常のページとして表示
-- モーダル経由でも同じコンテンツにアクセス可能
-
-**2. UX向上**
+**1. UX向上**
 - サイト内遷移時はモーダルでスムーズ表示
 - 戻るボタンで元のページに復帰
 - URLの共有が可能
+
+**2. 実装の学習効果**
+- Next.js 15の高度なルーティング機能の習得
+- モーダル表示とページ表示の使い分け
+- 実際のアプリケーション開発での応用可能性
 
 **3. パフォーマンス**
 - 必要な部分のみの再レンダリング
 - ページ全体の再読み込み不要
 
-## 👨‍💻 エンジニア感のあるUI実装
+## エンジニア感のあるUI実装
 
 ### VS Code風プロジェクト表示
 
@@ -450,6 +454,8 @@ export default function VSCodeEditor({
 
 ### package.json風スキル表示
 
+スキルセクションでは、package.jsonのような形式で技術スタックを表示し、各技術の習得度をプログレスバーで視覚化しています。
+
 ```typescript:SkillsSection.tsx
 export default function SkillsSection() {
   const [selectedCategory, setSelectedCategory] = useState('frontend');
@@ -458,14 +464,14 @@ export default function SkillsSection() {
     <div className="package-json-style bg-gray-900 border border-gray-700 rounded-lg p-6 font-mono">
       <pre className="text-gray-300">
 {`{
-  "name": "@miyabitti256/skills",
-  "version": "2024.12.0",
+  "name": "@portfolio/skills",
+  "version": "2025.1.0",
   "description": "現在学習中の技術スタック",
   "dependencies": {`}
       </pre>
       
       <div className="ml-4 my-4">
-        {skills.frontend.map((skill, index) => (
+        {skills[selectedCategory].map((skill, index) => (
           <motion.div
             key={skill.name}
             initial={{ opacity: 0, x: -20 }}
@@ -506,7 +512,7 @@ export default function SkillsSection() {
 }
 ```
 
-## 📝 ブログシステムの実装
+## ブログシステムの実装
 
 ### Markdown記事システム
 
@@ -577,9 +583,11 @@ export async function getAllArticles(): Promise<Article[]> {
 }
 ```
 
-### Zenn風記事作成CLI
+### ブログ記事作成システム
 
-```typescript:scripts/create-article.ts
+記事作成を効率化するため、CLI形式のスクリプトを作成しました。
+
+```typescript:lib/new-articles.ts
 #!/usr/bin/env bun
 
 import fs from 'fs';
@@ -642,69 +650,38 @@ console.log('Hello, World!');
   fs.writeFileSync(filePath, frontMatter);
   
   console.log(`✅ 記事を作成しました: ${filePath}`);
-  console.log(`📝 編集コマンド: code ${filePath}`);
 }
 
-// CLI引数解析
-const args = process.argv.slice(2);
-const options: ArticleOptions = { slug: '' };
-
-for (let i = 0; i < args.length; i++) {
-  const arg = args[i];
-  
-  if (arg.startsWith('--slug=')) {
-    options.slug = arg.split('=')[1];
-  } else if (arg.startsWith('--title=')) {
-    options.title = arg.split('=')[1];
-  } else if (arg.startsWith('--description=')) {
-    options.description = arg.split('=')[1];
-  } else if (arg.startsWith('--tags=')) {
-    options.tags = arg.split('=')[1].split(',');
-  } else if (arg === '--featured') {
-    options.featured = true;
-  }
-}
-
-if (!options.slug) {
-  console.error('❌ --slug オプションは必須です');
-  process.exit(1);
-}
-
-try {
-  createArticle(options);
-} catch (error) {
-  console.error('❌ エラー:', error.message);
-  process.exit(1);
-}
+// 使用例: bun run src/lib/new-articles.ts --slug=example --title="サンプル記事"
 ```
 
-## 📱 レスポンシブ対応
+## レスポンシブ対応
 
 ### iPhone SE対応の課題と解決
 
 特に苦労したのが、iPhone SE (375px) での表示問題でした。
 
 ```typescript:課題と解決策
-// ❌ 問題：長いURLが画面からはみ出る
+// 問題：長いURLが画面からはみ出る
 <div className="text-blue-400">
   https://github.com/miyabitti256/portfolio-website
 </div>
 
-// ✅ 解決：break-allで強制改行
+// 解決：break-allで強制改行
 <div className="text-blue-400 break-all">
   https://github.com/miyabitti256/portfolio-website  
 </div>
 
-// ❌ 問題：package.json風デザインでpadding不足
+// 問題：package.json風デザインでpadding不足
 <div className="p-6 font-mono">
   
-// ✅ 解決：レスポンシブpadding
+// 解決：レスポンシブpadding
 <div className="p-3 sm:p-6 font-mono">
 
-// ❌ 問題：フォントサイズが小さすぎる  
+// 問題：フォントサイズが小さすぎる  
 <div className="text-xs">
 
-// ✅ 解決：段階的フォントサイズ
+// 解決：段階的フォントサイズ
 <div className="text-xs sm:text-sm md:text-base">
 ```
 
@@ -713,7 +690,7 @@ try {
 スキルセクションのアニメーション発火タイミングも調整しました。
 
 ```typescript:改善前後の比較
-// ❌ 改善前：threshold: 0.1（10%表示で発火）
+// 改善前：threshold: 0.1（10%表示で発火）
 const observer = new IntersectionObserver(
   ([entry]) => {
     if (entry.isIntersecting) {
@@ -723,7 +700,7 @@ const observer = new IntersectionObserver(
   { threshold: 0.1 }  // 小さい画面では発火しにくい
 );
 
-// ✅ 改善後：threshold: 0.01 + rootMargin
+// 改善後：threshold: 0.01 + rootMargin
 const observer = new IntersectionObserver(
   ([entry]) => {
     if (entry.isIntersecting) {
@@ -737,7 +714,7 @@ const observer = new IntersectionObserver(
 );
 ```
 
-## 🎨 デザインシステム
+## デザインシステム
 
 ### カラーパレット設計
 
@@ -796,7 +773,7 @@ export const colors = {
 }
 ```
 
-## 🚧 開発過程で遭遇した課題
+## 開発過程で遭遇した課題
 
 ### 1. ページ遷移アニメーション問題
 
@@ -862,72 +839,24 @@ export const GitHubIcon = ({ size = 24, className = "" }) => (
   </svg>
 );
 ```
-
-## 📊 パフォーマンス最適化
-
-### Lighthouse スコア
-
-最終的なパフォーマンス指標：
-- **Performance**: 92点
-- **Accessibility**: 95点  
-- **Best Practices**: 96点
-- **SEO**: 90点
-
-### 最適化手法
-
-**1. 画像最適化**
-```typescript
-// Next.js Image コンポーネント活用
-<Image
-  src="/images/projects/project-1.webp"
-  alt="プロジェクト画像"
-  width={600}
-  height={400}
-  priority={false}
-  placeholder="blur"
-  blurDataURL="data:image/jpeg;base64,..."
-/>
-```
-
-**2. 動的インポート**
-```typescript
-// 重いコンポーネントの遅延読み込み
-const VSCodeEditor = dynamic(() => import('@/components/engineer-ui/VSCodeEditor'), {
-  loading: () => <div>Loading...</div>,
-  ssr: false, // クライアントサイドでのみ実行
-});
-```
-
-**3. フォント最適化**
-```typescript:next.config.ts
-module.exports = {
-  experimental: {
-    optimizeFonts: true,
-    fontLoaders: [
-      { loader: 'next/font/google', options: { subsets: ['latin'] } },
-    ],
-  },
-};
-```
-
-## 🎓 学習成果と今後の展望
+## 学習成果と今後の展望
 
 ### 技術的成長
 
-**Next.js 15の深い理解**
-- App Routerの完全活用
+**Next.js 15の理解**
+- App Routerによる効率的なルーティング
 - Parallel RoutesとIntercepting Routesの実践的応用
-- Server/Client Componentの適切な使い分け
+- Server/Client Componentの使い分け
 
 **Framer Motionによるアニメーション技術**
 - 宣言的なアニメーション設計
-- パフォーマンスを意識したアニメーション実装
-- 複雑な条件分岐を持つアニメーション制御
+- ページ遷移とインタラクションアニメーション
+- 条件分岐を持つアニメーション制御
 
-**TypeScriptでの大規模開発**
+**TypeScriptでの開発経験**
 - 型安全性を活かした開発効率向上
-- インターフェース設計とコンポーネント間の型連携
-- エラーハンドリングと型ガードの実装
+- React Hooksの型活用
+- エラーハンドリングの実装
 
 ### 開発プロセスの改善
 
@@ -944,60 +873,48 @@ module.exports = {
 ### 今後の技術学習計画
 
 **短期目標（3ヶ月）**
-- Rust/Goの基礎学習
-- WebAssemblyの研究
-- マイクロフロントエンドアーキテクチャの学習
+- Next.js route handlerを活用したフルスタック開発
+- テスト実装（Jest、React Testing Library）
+- UI/UXデザインの基礎学習
 
 **中期目標（6ヶ月）**
-- フルスタックアプリケーションのスケールアップ
-- CI/CDパイプラインの実装
-- テスト自動化（Jest、Playwright）
+- データベース連携アプリケーションの開発
+- 認証・認可システムの実装
+- パフォーマンス最適化の実践
 
 **長期目標（1年）**
-- 大規模Webアプリケーションの設計・実装
-- パフォーマンス最適化の深掘り
-- オープンソースプロジェクトへの貢献
+- 実際のプロダクト開発への参加
+- チーム開発でのフロントエンド実装
+- ユーザーに価値を提供するWebアプリケーション開発
 
-## 📋 まとめ
+## まとめ
 
-このポートフォリオサイトの開発を通じて、単なる情報展示サイトではなく、**技術力を具体的に示すインタラクティブなWebアプリケーション**を作ることができました。
+このポートフォリオサイトの開発を通じて、単なる情報展示サイトではなく、**技術力と学習意欲を具体的に示すWebアプリケーション**を作ることができました。
 
 ### 主な成果
 
 **技術面**
-- Next.js 15の高度な機能を実践的に活用
-- Framer Motionによる高品質なアニメーションシステム
-- レスポンシブデザインの完全対応
-- TypeScriptによる型安全な大規模開発
+- Next.js 15のParallel/Intercepting Routesを実践的に活用
+- Framer Motionによるスムーズなアニメーション実装
+- レスポンシブデザインの対応
+- TypeScriptによる型安全な開発
 
 **デザイン面**  
 - エンジニア感のあるUI/UXの実現
-- VS Code風、ターミナル風などの差別化されたデザイン
-- 一貫したデザインシステムの構築
+- VS Code風エディター、package.json風レイアウトの実装
+- 一貫したカラーテーマとデザインシステム
 
 **開発プロセス面**
 - 段階的な実装による品質管理
 - 問題解決能力の向上
-- 最新技術への適応力の実証
-
-就職活動において、このポートフォリオは単なる作品集ではなく、**学習能力・問題解決能力・技術的好奇心**を具体的に示すツールとして機能すると確信しています。
+- 新しい技術への積極的な取り組み
 
 ### 技術ブログとして
 
-このプロジェクトで学んだ知識は、今後も継続的に技術ブログとして発信していく予定です。特に：
-
-- Next.js 15の高度な機能解説
-- Framer Motionアニメーション実装パターン
-- TypeScriptでの大規模開発ベストプラクティス
-- レスポンシブ対応の実践的手法
-
-など、実際の開発で遭遇した課題とその解決策を中心に、実用的な情報を提供していきたいと思います。
+開発で学んだ知識は、今後も継続的にZennやこのブログページで発信していく予定です。
 
 ---
 
-**GitHub Repository**: [https://github.com/miyabitti256/portfolio](https://github.com/miyabitti256/portfolio)  
-**Live Demo**: [https://portfolio-miyabitti256.vercel.app](https://portfolio-miyabitti256.vercel.app)  
-**技術記事**: [Zenn - miyabitti256](https://zenn.dev/miyabitti256)
-
-最後まで読んでいただき、ありがとうございました。質問やフィードバックがあれば、ぜひお気軽にお声がけください！
+最後まで読んでいただき、ありがとうございました Zennと同じ様に締めたいと思います。
+ニート脱却したいな～では。
 
