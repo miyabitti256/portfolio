@@ -100,6 +100,7 @@ export default function HeroSection() {
     const section = document.querySelector(selector);
 
     if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
       console.log('Scroll Debug:', {
         selector: selector,
         element: section,
@@ -115,6 +116,7 @@ export default function HeroSection() {
         behavior: 'smooth'
       });
     } else {
+      // eslint-disable-next-line no-console
       console.warn(`Section with selector "${selector}" not found`);
     }
   };

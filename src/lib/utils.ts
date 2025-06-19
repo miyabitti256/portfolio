@@ -145,6 +145,7 @@ export const measurePerformance = (name: string, fn: () => void): void => {
     const start = performance.now();
     fn();
     const end = performance.now();
+    // eslint-disable-next-line no-console
     console.log(`${name}: ${end - start}ms`);
   } else {
     fn();

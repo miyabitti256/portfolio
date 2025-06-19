@@ -64,6 +64,7 @@ export function PageTransition({ children }: PageTransitionProps) {
     setShouldSkipAnimation(skip);
 
     if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
       console.log('PageTransition Debug:', {
         pathname,
         previousPathname,
