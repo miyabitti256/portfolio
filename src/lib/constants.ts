@@ -45,14 +45,14 @@ export const ANIMATION_CONFIG = {
       duration: 4,
     },
   },
-  
+
   // セクション - 控えめアニメーション
   section: {
     fadeInDelay: 0.1,
     staggerDelay: 0.1,
     duration: 0.6,
   },
-  
+
   // ページ遷移
   pageTransition: {
     duration: 0.6,
@@ -69,7 +69,7 @@ export const ANIMATION_CONFIG = {
       ],
     },
   },
-  
+
   // ホバーエフェクト
   hover: {
     cardScale: 1.02,
@@ -120,17 +120,17 @@ export const PERFORMANCE_CONFIG = {
     threshold: 0.1,
     rootMargin: "-10% 0px -10% 0px",
   },
-  
+
   // 画像最適化
   imageOptions: {
     quality: 85,
     formats: ["webp", "jpg"],
   },
-  
+
   // デバウンス・スロットル
   debounceDelay: 300,
   throttleDelay: 100,
-  
+
   // アニメーション
   reducedMotion: true, // prefers-reduced-motionを考慮
 } as const;
@@ -210,4 +210,4 @@ export const METADATA = {
 // 型定義のエクスポート
 export type NavigationItem = (typeof NAVIGATION_ITEMS)[number];
 export type SocialLink = (typeof SOCIAL_LINKS)[keyof typeof SOCIAL_LINKS];
-export type BreakpointKey = keyof typeof BREAKPOINTS; 
+export type BreakpointKey = keyof typeof BREAKPOINTS;

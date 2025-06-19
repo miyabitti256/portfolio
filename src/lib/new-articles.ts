@@ -53,7 +53,7 @@ featured: ${featured}
 // コマンドライン引数をパース
 function parseArguments(): CreateArticleOptions | null {
   const args = process.argv.slice(2);
-  
+
   if (args.length === 0) {
     console.error('使用方法: bun articles:new --slug="article-slug" [options]');
     console.error('');

@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Mail, 
+import {
   ExternalLink,
   Terminal,
   Copy,
@@ -122,16 +121,16 @@ export default function ContactSection() {
           <div className="terminal-window mb-6 sm:mb-8">
             <div className="terminal-header">
               <div className="flex gap-2">
-                <div className="terminal-dot bg-red-500"></div>
-                <div className="terminal-dot bg-yellow-500"></div>
-                <div className="terminal-dot bg-green-500"></div>
+                <div className="terminal-dot bg-red-500" />
+                <div className="terminal-dot bg-yellow-500" />
+                <div className="terminal-dot bg-green-500" />
               </div>
               <div className="text-gray-300 text-xs sm:text-sm ml-2 sm:ml-4 flex items-center gap-1 sm:gap-2">
                 <Terminal size={14} className="sm:w-4 sm:h-4" />
                 <span className="hidden xs:inline">~/contact</span>
               </div>
             </div>
-            
+
             <div className="p-3 sm:p-4 md:p-6 font-mono text-xs sm:text-sm overflow-x-auto">
               {/* ターミナルプロンプト */}
               <div className="mb-3 sm:mb-4">
@@ -141,12 +140,12 @@ export default function ContactSection() {
               <div className="mb-3 sm:mb-4 text-gray-300">
                 {personalInfo.name} - {personalInfo.subtitle}
               </div>
-              
+
               <div className="mb-3 sm:mb-4">
                 <span className="text-green-400">$</span>
                 <span className="text-blue-400 ml-2">cat contacts.json</span>
               </div>
-              
+
               {/* JSON風コンタクト情報 */}
               <div className="bg-gray-800 rounded-lg p-2 sm:p-3 md:p-4 mb-3 sm:mb-4 border border-gray-700 overflow-x-auto break-words">
                 <pre className="text-gray-300 text-xs sm:text-sm">
@@ -182,7 +181,7 @@ export default function ContactSection() {
 }`}
                 </pre>
               </div>
-              
+
               <div className="mb-2">
                 <span className="text-green-400">$</span>
                 <span className="text-blue-400 ml-2">ls -la social/</span>
@@ -225,7 +224,7 @@ export default function ContactSection() {
                   <Badge variant="outline" className="font-mono text-xs break-all max-w-[60%]">
                     {contact.username}
                   </Badge>
-                  
+
                   <div className="flex gap-1 sm:gap-2 flex-shrink-0">
                     <Button
                       variant="ghost"
@@ -239,7 +238,7 @@ export default function ContactSection() {
                         <Copy size={14} />
                       )}
                     </Button>
-                    
+
                     {contact.url !== '#' && (
                       <Button
                         variant="ghost"
@@ -247,9 +246,9 @@ export default function ContactSection() {
                         asChild
                         className={`${contact.color} p-1 h-8 w-8`}
                       >
-                        <a 
-                          href={contact.url} 
-                          target="_blank" 
+                        <a
+                          href={contact.url}
+                          target="_blank"
                           rel="noopener noreferrer"
                         >
                           <ExternalLink size={14} />
@@ -270,17 +269,17 @@ export default function ContactSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: isVisible ? 1 : 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}
-            className="text-center mt-8 sm:mt-12"
+            className="mt-8 sm:mt-12"
           >
-            <div className="terminal-window inline-block max-w-full">
+            <div className="terminal-window inline-block w-full">
               <div className="terminal-header">
                 <div className="flex gap-2">
-                  <div className="terminal-dot bg-red-500"></div>
-                  <div className="terminal-dot bg-yellow-500"></div>
-                  <div className="terminal-dot bg-green-500"></div>
+                  <div className="terminal-dot bg-red-500" />
+                  <div className="terminal-dot bg-yellow-500" />
+                  <div className="terminal-dot bg-green-500" />
                 </div>
               </div>
-              <div className="p-3 sm:p-4 text-center">
+              <div className="p-3 sm:p-4">
                 <div className="text-green-400 text-xs sm:text-sm font-mono mb-2">
                   <span className="text-blue-400">$</span> echo "Thank you for visiting!"
                 </div>
@@ -295,4 +294,4 @@ export default function ContactSection() {
       </div>
     </section>
   );
-} 
+}

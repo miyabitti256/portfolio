@@ -60,7 +60,7 @@ export function PageTransition({ children }: PageTransitionProps) {
         skip = true;
       }
     }
-    
+
     setShouldSkipAnimation(skip);
 
     if (process.env.NODE_ENV === 'development') {
@@ -72,7 +72,7 @@ export function PageTransition({ children }: PageTransitionProps) {
         pageKey,
       });
     }
-    
+
     if (skip) {
       setIsLoading(false);
       setShowTerminal(false);
@@ -100,7 +100,8 @@ export function PageTransition({ children }: PageTransitionProps) {
     // 状態を更新
     previousPathnameRef.current = pathname;
     isInitialLoadRef.current = false;
-    
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return (
@@ -121,14 +122,14 @@ export function PageTransition({ children }: PageTransitionProps) {
             <div className="bg-gray-900 rounded-lg border border-gray-700 overflow-hidden shadow-2xl max-w-lg w-full mx-4">
               {/* ターミナルヘッダー */}
               <div className="bg-gray-800 px-4 py-2 flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <div className="w-3 h-3 rounded-full bg-red-500" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                <div className="w-3 h-3 rounded-full bg-green-500" />
                 <span className="text-gray-300 text-sm ml-2 font-mono">
                   portfolio-terminal
                 </span>
               </div>
-              
+
               {/* ターミナル本体 */}
               <div className="p-4 min-h-[200px] font-mono text-sm">
                 {LOADING_MESSAGES.slice(0, loadingStep + 1).map((message, index) => (
@@ -138,8 +139,8 @@ export function PageTransition({ children }: PageTransitionProps) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, ease: 'easeOut' }}
                     className={`mb-2 ${
-                      message.includes('✓') 
-                        ? 'text-green-400' 
+                      message.includes('✓')
+                        ? 'text-green-400'
                         : message.includes('$')
                         ? 'text-blue-400'
                         : 'text-gray-300'
@@ -149,8 +150,8 @@ export function PageTransition({ children }: PageTransitionProps) {
                     {index === loadingStep && (
                       <motion.span
                         animate={{ opacity: [1, 0, 1] }}
-                        transition={{ 
-                          duration: 1, 
+                        transition={{
+                          duration: 1,
                           repeat: Infinity,
                           ease: 'easeInOut',
                         }}
@@ -161,7 +162,7 @@ export function PageTransition({ children }: PageTransitionProps) {
                     )}
                   </motion.div>
                 ))}
-                
+
                 {/* プログレスバー */}
                 {loadingStep >= 2 && (
                   <div className="mt-4">
@@ -192,16 +193,16 @@ export function PageTransition({ children }: PageTransitionProps) {
             } : {
               // 通常時のアニメーション - ローディング完了後に開始
               initial: { opacity: 0, scale: 0.98, filter: 'blur(4px)' },
-              animate: { 
-                opacity: isLoading ? 0 : 1, 
-                scale: isLoading ? 0.98 : 1, 
-                filter: isLoading ? 'blur(4px)' : 'blur(0px)' 
+              animate: {
+                opacity: isLoading ? 0 : 1,
+                scale: isLoading ? 0.98 : 1,
+                filter: isLoading ? 'blur(4px)' : 'blur(0px)'
               },
               exit: { opacity: 0, scale: 1.02, filter: 'blur(2px)' },
-              transition: { 
-                duration: isLoading ? 0 : 0.6, 
+              transition: {
+                duration: isLoading ? 0 : 0.6,
                 ease: 'easeOut',
-                delay: isLoading ? 0 : 0.1 
+                delay: isLoading ? 0 : 0.1
               },
             })}
             className="w-full"
@@ -212,4 +213,4 @@ export function PageTransition({ children }: PageTransitionProps) {
       </div>
     </>
   );
-} 
+}

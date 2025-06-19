@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Calendar, 
-  GitCommit, 
-  CheckCircle, 
-  Circle, 
-  Code, 
-  User, 
+import {
+  CheckCircle,
+  Circle,
+  Code,
+  User,
   Target,
   Zap,
   ChevronDown
@@ -141,108 +139,6 @@ export default function AboutSection() {
                   </div>
                 </div>
               </div>
-            </motion.div>
-
-            {/* 右側: Git commit履歴風学習経歴 */}
-            <motion.div
-              variants={sectionAnimations.slideIn}
-              className="space-y-6"
-            >
-              <div className="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
-                {/* Terminal風ヘッダー */}
-                <div className="bg-gray-800 px-4 py-3 flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <div className="ml-4 text-gray-300 text-sm font-mono">
-                    ~/learning-journey
-                  </div>
-                </div>
-
-                {/* Git log風の学習経歴 */}
-                <div className="p-6 space-y-4">
-                  <div className="text-green-400 text-sm font-mono mb-4">
-                    <span className="text-blue-400">$</span> git log --oneline --graph
-                  </div>
-                  
-                  {personalInfo.learningJourney.map((journey, index) => (
-                    <motion.div
-                      key={journey.id}
-                      variants={sectionAnimations.fadeInUp}
-                      transition={{ delay: index * 0.2 }}
-                      className="relative"
-                    >
-                      {/* Git graph線 */}
-                      <div className="flex items-start gap-4">
-                        <div className="flex flex-col items-center">
-                          <div 
-                            className="w-3 h-3 rounded-full flex-shrink-0"
-                            style={{ backgroundColor: journey.color }}
-                          ></div>
-                          {index < personalInfo.learningJourney.length - 1 && (
-                            <div className="w-px h-16 bg-gray-600 mt-2"></div>
-                          )}
-                        </div>
-                        
-                        {/* Commit情報 */}
-                        <div className="flex-1 pb-4">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span 
-                              className="text-sm font-mono"
-                              style={{ color: journey.color }}
-                            >
-                              {journey.id.substring(0, 7)}
-                            </span>
-                            <span className="text-gray-300 text-sm font-mono">
-                              {journey.status === 'current' ? '(HEAD -> main)' : ''}
-                            </span>
-                            {journey.status === 'current' && (
-                              <Circle size={12} className="text-orange-400 animate-pulse" />
-                            )}
-                            {journey.status === 'completed' && (
-                              <CheckCircle size={12} className="text-green-400" />
-                            )}
-                          </div>
-                          
-                          <div className="text-white font-mono text-sm mb-1">
-                            {journey.title}
-                          </div>
-                          
-                          <div className="text-gray-400 text-xs font-mono mb-2">
-                            {journey.period}
-                          </div>
-                          
-                          <div className="text-gray-300 text-sm font-zen-maru">
-                            {journey.description}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                  
-                  {/* 将来の学習予定 */}
-                  <motion.div
-                    variants={sectionAnimations.fadeInUp}
-                    transition={{ delay: personalInfo.learningJourney.length * 0.2 }}
-                    className="border-t border-gray-700 pt-4 mt-6"
-                  >
-                    <div className="text-gray-400 text-sm font-mono mb-2">
-                      # 今後の学習予定
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {personalInfo.goals.futureInterests.map((tech, index) => (
-                        <span
-                          key={index}
-                          className="px-2 py-1 bg-gray-700 text-gray-300 rounded text-xs font-mono"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </motion.div>
-                </div>
-              </div>
-
               {/* 学習へのモチベーション */}
               <motion.div
                 variants={sectionAnimations.fadeInUp}
@@ -267,9 +163,110 @@ export default function AboutSection() {
                 </div>
               </motion.div>
             </motion.div>
+
+            {/* 右側: Git commit履歴風学習経歴 */}
+            <motion.div
+              variants={sectionAnimations.slideIn}
+              className="space-y-6"
+            >
+              <div className="bg-gray-900 rounded-lg overflow-hidden shadow-lg">
+                {/* Terminal風ヘッダー */}
+                <div className="bg-gray-800 px-4 py-3 flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                  <div className="w-3 h-3 rounded-full bg-green-500" />
+                  <div className="ml-4 text-gray-300 text-sm font-mono">
+                    ~/learning-journey
+                  </div>
+                </div>
+
+                {/* Git log風の学習経歴 */}
+                <div className="p-6 space-y-4">
+                  <div className="text-green-400 text-sm font-mono mb-4">
+                    <span className="text-blue-400">$</span> git log --oneline --graph
+                  </div>
+
+                  {personalInfo.learningJourney.map((journey, index) => (
+                    <motion.div
+                      key={journey.id}
+                      variants={sectionAnimations.fadeInUp}
+                      transition={{ delay: index * 0.2 }}
+                      className="relative"
+                    >
+                      {/* Git graph線 */}
+                      <div className="flex items-start gap-4">
+                        <div className="flex flex-col items-center">
+                          <div
+                            className="w-3 h-3 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: journey.color }}
+                           />
+                          {index < personalInfo.learningJourney.length - 1 && (
+                            <div className="w-px h-16 bg-gray-600 mt-2" />
+                          )}
+                        </div>
+
+                        {/* Commit情報 */}
+                        <div className="flex-1 pb-4">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span
+                              className="text-sm font-mono"
+                              style={{ color: journey.color }}
+                            >
+                              {journey.id.substring(0, 7)}
+                            </span>
+                            <span className="text-gray-300 text-sm font-mono">
+                              {journey.status === 'current' ? '(HEAD -> main)' : ''}
+                            </span>
+                            {journey.status === 'current' && (
+                              <Circle size={12} className="text-orange-400 animate-pulse" />
+                            )}
+                            {journey.status === 'completed' && (
+                              <CheckCircle size={12} className="text-green-400" />
+                            )}
+                          </div>
+
+                          <div className="text-white font-mono text-sm mb-1">
+                            {journey.title}
+                          </div>
+
+                          <div className="text-gray-400 text-xs font-mono mb-2">
+                            {journey.period}
+                          </div>
+
+                          <div className="text-gray-300 text-sm font-zen-maru">
+                            {journey.description}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+
+                  {/* 将来の学習予定 */}
+                  <motion.div
+                    variants={sectionAnimations.fadeInUp}
+                    transition={{ delay: personalInfo.learningJourney.length * 0.2 }}
+                    className="border-t border-gray-700 pt-4 mt-6"
+                  >
+                    <div className="text-gray-400 text-sm font-mono mb-2">
+                      # 今後の学習予定
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {personalInfo.goals.futureInterests.map((tech, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-gray-700 text-gray-300 rounded text-xs font-mono"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </motion.div>
-        
+
         {/* スクロールインジケーター */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -295,4 +292,4 @@ export default function AboutSection() {
       </div>
     </section>
   );
-} 
+}

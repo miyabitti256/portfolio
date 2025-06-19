@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { BookOpen, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { ArticleCard } from '@/components/ui/article-card';
 import { Button } from '@/components/ui/button';
@@ -26,9 +26,8 @@ export function BlogSectionClient({ articles, displayArticles }: BlogSectionClie
         >
           <div className="flex items-center justify-center gap-3 mb-4">
             <Link href="/articles" className="flex items-center gap-2">
-              <BookOpen className="text-sky-600" size={32} />
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                技術ブログ
+              <h2 className="text-2xl sm:text-3xl md:text-4xl  font-bold text-gray-900">
+                Tech Blog
               </h2>
             </Link>
           </div>
@@ -64,9 +63,9 @@ export function BlogSectionClient({ articles, displayArticles }: BlogSectionClie
                 className="group border-sky-300 text-sky-700 hover:bg-sky-50 hover:border-sky-400"
               >
                 すべての記事を見る
-                <ArrowRight 
-                  size={18} 
-                  className="ml-2 group-hover:translate-x-1 transition-transform duration-200" 
+                <ArrowRight
+                  size={18}
+                  className="ml-2 group-hover:translate-x-1 transition-transform duration-200"
                 />
               </Button>
             </Link>
@@ -75,4 +74,4 @@ export function BlogSectionClient({ articles, displayArticles }: BlogSectionClie
       </div>
     </section>
   );
-} 
+}

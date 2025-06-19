@@ -9,7 +9,7 @@ interface ArticleCardProps {
   index?: number;
 }
 
-export function ArticleCard({ article, index = 0 }: ArticleCardProps) {
+export function ArticleCard({ article, index: _index = 0 }: ArticleCardProps) {
   const publishedDate = new Date(article.publishedAt).toLocaleDateString('ja-JP', {
     year: 'numeric',
     month: 'long',
@@ -32,14 +32,14 @@ export function ArticleCard({ article, index = 0 }: ArticleCardProps) {
                 )}
               </div>
             </div>
-            
+
             {article.description && (
               <p className="text-gray-600 text-sm mt-2 line-clamp-3">
                 {article.description}
               </p>
             )}
           </CardHeader>
-          
+
           <CardContent className="pt-0">
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-3">
               <div className="flex items-center gap-1">
@@ -51,7 +51,7 @@ export function ArticleCard({ article, index = 0 }: ArticleCardProps) {
                 <span>{article.readingTime}分</span>
               </div>
             </div>
-            
+
             {article.tags.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {article.tags.slice(0, 3).map((tag, tagIndex) => (
@@ -75,4 +75,4 @@ export function ArticleCard({ article, index = 0 }: ArticleCardProps) {
         </Card>
       </Link>
   );
-} 
+}

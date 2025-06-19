@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { 
+import {
   siJavascript,
   siTypescript,
   siReact,
@@ -60,7 +60,7 @@ export const TechIcon = memo(({ iconName, size = 24, className = '', style }: Te
   // AWS用のカスタムアイコン（Simple Iconsにないため）
   if (iconName === 'amazonaws') {
     return (
-      <div 
+      <div
         className={`inline-flex items-center justify-center ${className}`}
         style={{ width: size, height: size, ...style }}
       >
@@ -78,10 +78,10 @@ export const TechIcon = memo(({ iconName, size = 24, className = '', style }: Te
   }
 
   const icon = iconMap[iconName as keyof typeof iconMap];
-  
+
   if (!icon) {
     return (
-      <div 
+      <div
         className={`inline-flex items-center justify-center bg-gray-400 rounded ${className}`}
         style={{ width: size, height: size, ...style }}
       >
@@ -91,7 +91,7 @@ export const TechIcon = memo(({ iconName, size = 24, className = '', style }: Te
   }
 
   return (
-    <div 
+    <div
       className={`inline-flex items-center justify-center ${className}`}
       style={{ width: size, height: size }}
     >
@@ -108,4 +108,4 @@ export const TechIcon = memo(({ iconName, size = 24, className = '', style }: Te
   );
 });
 
-TechIcon.displayName = 'TechIcon'; 
+TechIcon.displayName = 'TechIcon';

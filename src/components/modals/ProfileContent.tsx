@@ -55,16 +55,16 @@ export function ProfileContent() {
         </h4>
         <div className="space-y-2">
           <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-            <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+            <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0" />
             <p className="text-gray-700 font-zen-maru">{personalInfo.goals.immediate}</p>
           </div>
           <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-            <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+            <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0" />
             <p className="text-gray-700 font-zen-maru">{personalInfo.goals.longTerm}</p>
           </div>
           {personalInfo.goals.interests.map((interest, index) => (
             <div key={index} className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0" />
               <p className="text-gray-700 font-zen-maru">{interest}</p>
             </div>
           ))}
@@ -95,4 +95,4 @@ export function ProfileContent() {
       </div>
     </div>
   );
-} 
+}

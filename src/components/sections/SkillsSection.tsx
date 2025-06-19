@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Code, 
-  Server, 
-  Database, 
-  Settings, 
-  Palette, 
+import {
+  Code,
+  Server,
+  Database,
+  Settings,
+  Palette,
   ChevronRight,
   TrendingUp,
   BookOpen,
@@ -42,7 +42,7 @@ export default function SkillsSection() {
           setIsVisible(true);
         }
       },
-      { 
+      {
         threshold: 0.01, // iPhone SEでも確実に検出されるよう閾値を更に下げる
         rootMargin: '100px 0px' // 上下100pxのマージンを追加して早期検出
       }
@@ -154,12 +154,12 @@ export default function SkillsSection() {
                 transition={{ delay: index * 0.1 }}
                 className="group"
               >
-                <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-l-4" 
+                <Card className="h-full hover:shadow-lg transition-shadow duration-300 border-l-4"
                       style={{ borderLeftColor: skill.color }}>
                   <CardHeader className="pb-2 sm:pb-3 p-4 sm:p-6">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                        <TechIcon 
+                        <TechIcon
                           iconName={skill.iconName}
                           size={20}
                           className="flex-shrink-0 sm:w-6 sm:h-6"
@@ -179,7 +179,7 @@ export default function SkillsSection() {
                       )}
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6 pt-0">
                     {/* プログレスバー */}
                     <div className="space-y-2">
@@ -187,8 +187,8 @@ export default function SkillsSection() {
                         <span className="text-gray-600">習熟度</span>
                         <span className="text-gray-900 font-medium">{skill.level}%</span>
                       </div>
-                      <Progress 
-                        value={skill.level} 
+                      <Progress
+                        value={skill.level}
                         variant="skill"
                         size="default"
                       />
@@ -242,7 +242,7 @@ export default function SkillsSection() {
                   <Card className="border-dashed border-2 border-gray-300 hover:border-blue-400 transition-colors duration-300">
                     <CardHeader className="pb-2 sm:pb-3 p-4 sm:p-6">
                       <div className="flex items-center gap-2 sm:gap-3">
-                        <TechIcon 
+                        <TechIcon
                           iconName={skill.iconName}
                           size={20}
                           className="flex-shrink-0 sm:w-6 sm:h-6 opacity-60"
@@ -258,7 +258,7 @@ export default function SkillsSection() {
                         </div>
                       </div>
                     </CardHeader>
-                    
+
                     <CardContent className="space-y-2 sm:space-y-3 p-4 sm:p-6 pt-0">
                       <p className="text-xs sm:text-sm text-gray-600 font-zen-maru leading-relaxed">
                         {skill.description}
@@ -301,7 +301,7 @@ export default function SkillsSection() {
                       </li>
                     </ul>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <h4 className="font-semibold text-gray-900 font-zen-maru text-sm sm:text-base">技術選択の基準</h4>
                     <ul className="space-y-2 text-xs sm:text-sm text-gray-700 font-zen-maru">
@@ -324,7 +324,7 @@ export default function SkillsSection() {
             </Card>
           </motion.div>
         </motion.div>
-        
+
         {/* スクロールインジケーター */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -350,4 +350,4 @@ export default function SkillsSection() {
       </div>
     </section>
   );
-} 
+}

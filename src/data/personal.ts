@@ -5,14 +5,14 @@ export const personalInfo = {
   subtitle: "趣味でプログラミングをしている者だ(現場未経験)",
   description: "WordPressから始まり、JavaScript/TypeScriptの世界に魅力を感じ、現代的な技術スタックでのフルスタック開発を学んでいます。",
   location: "Japan",
-  
+
   // Hero Section用のメッセージ
   heroMessages: {
     primary: "学習と創造を続けるWeb開発者になりたい人",
     secondary: "技術で価値を生み出すことを目指しています",
     alternative: "未経験からスタートした学習の軌跡",
   },
-  
+
   // 学習経緯
   learningJourney: [
     {
@@ -28,7 +28,7 @@ export const personalInfo = {
       period: "基礎学習",
       title: "JavaScript学習開始",
       description: "PHP(WordPress)に興味を持てずJavaScriptから学習をスタート。モダンな開発環境と構文に魅力を感じる",
-      status: "completed", 
+      status: "completed",
       color: "#10b981"
     },
     {
@@ -72,7 +72,7 @@ export const personalInfo = {
       color: "#f97316"
     }
   ],
-  
+
   // 連絡先・SNS
   contacts: {
     github: {
@@ -81,7 +81,7 @@ export const personalInfo = {
       display: "@miyabitti256"
     },
     twitter: {
-      username: "miyabitti0256", 
+      username: "miyabitti0256",
       url: "https://twitter.com/miyabitti0256",
       display: "@miyabitti0256"
     },
@@ -96,7 +96,7 @@ export const personalInfo = {
       display: "@miyabitti256"
     }
   },
-  
+
   // 目標・価値観
   goals: {
     immediate: "Web系エンジニアとして就職",
@@ -104,7 +104,7 @@ export const personalInfo = {
     interests: ["フルスタック開発", "モダンな技術スタック", "UI/UX", "パフォーマンス最適化"],
     futureInterests: ["Rust", "Go", "クラウドアーキテクチャ"]
   },
-  
+
   // アピールポイント
   strengths: [
     "学習意欲の高さ - 新しい技術のキャッチアップを積極的に行う",
@@ -113,4 +113,4 @@ export const personalInfo = {
   ]
 };
 
-export type PersonalInfo = typeof personalInfo; 
+export type PersonalInfo = typeof personalInfo;

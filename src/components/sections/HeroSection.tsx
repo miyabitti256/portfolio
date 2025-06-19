@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Mail, ChevronDown, BookOpen } from 'lucide-react';
+import { ChevronDown, BookOpen } from 'lucide-react';
 import { GitHubIcon, XIcon, ZennIcon } from '@/components/ui/social-icons';
 import { heroAnimations } from '@/data/animations';
 import { personalInfo } from '@/data/personal';
@@ -73,13 +73,13 @@ export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [currentPhase, setCurrentPhase] = useState(0);
   const [particlesVisible, setParticlesVisible] = useState(false);
-  const [animationsEnabled, setAnimationsEnabled] = useState(true);
+  const [animationsEnabled] = useState(true);
 
   useEffect(() => {
     const startAnimation = () => {
       setIsVisible(true);
       setParticlesVisible(true);
-      
+
       // アニメーションフェーズの制御
       const phaseTimer = setTimeout(() => {
         setCurrentPhase(1);
@@ -98,7 +98,7 @@ export default function HeroSection() {
 
   const smoothScrollTo = (selector: string) => {
     const section = document.querySelector(selector);
-    
+
     if (process.env.NODE_ENV === 'development') {
       console.log('Scroll Debug:', {
         selector: selector,
@@ -109,7 +109,7 @@ export default function HeroSection() {
 
     if (section) {
       const targetPosition = (section as HTMLElement).offsetTop;
-      
+
       window.scrollTo({
         top: targetPosition,
         behavior: 'smooth'
@@ -131,13 +131,13 @@ export default function HeroSection() {
           const isLarge = i % 5 === 0;
           const isGlow = i % 3 === 0;
           const size = isLarge ? 'w-3 h-3' : 'w-2 h-2';
-          const color = isGlow 
-            ? 'bg-gradient-to-br from-blue-400 to-cyan-500' 
+          const color = isGlow
+            ? 'bg-gradient-to-br from-blue-400 to-cyan-500'
             : 'bg-blue-500/70';
-          const glowStyle = isGlow 
-            ? '0 0 12px rgba(59, 130, 246, 0.6), 0 0 20px rgba(6, 182, 212, 0.3)' 
+          const glowStyle = isGlow
+            ? '0 0 12px rgba(59, 130, 246, 0.6), 0 0 20px rgba(6, 182, 212, 0.3)'
             : '0 0 6px rgba(59, 130, 246, 0.4)';
-          
+
           // アニメーション無効時のフォールバック
           if (!animationsEnabled) {
             return (
@@ -153,7 +153,7 @@ export default function HeroSection() {
               />
             );
           }
-          
+
           return (
             <motion.div
               key={i}
@@ -198,7 +198,7 @@ export default function HeroSection() {
                 {personalInfo.name.charAt(0)}
               </div>
               <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center">
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
               </div>
               {/* ホバー時のツールチップ */}
               <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-1 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap font-zen-maru">
@@ -254,9 +254,9 @@ export default function HeroSection() {
               <div className="terminal-window">
                 <div className="terminal-header">
                   <div className="flex gap-2">
-                    <div className="terminal-dot terminal-dot-red"></div>
-                    <div className="terminal-dot terminal-dot-yellow"></div>
-                    <div className="terminal-dot terminal-dot-green"></div>
+                    <div className="terminal-dot terminal-dot-red" />
+                    <div className="terminal-dot terminal-dot-yellow" />
+                    <div className="terminal-dot terminal-dot-green" />
                   </div>
                   <div className="text-gray-300 text-sm ml-4">~/portfolio</div>
                 </div>
@@ -266,7 +266,7 @@ export default function HeroSection() {
                   </div>
                   <div className="text-gray-300 text-sm font-mono mt-1">
                     {personalInfo.subtitle}
-                    <span className="terminal-cursor"></span>
+                    <span className="terminal-cursor" />
                   </div>
                 </div>
               </div>
@@ -341,4 +341,4 @@ export default function HeroSection() {
       </div>
     </section>
   );
-} 
+}

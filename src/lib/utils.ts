@@ -1,8 +1,8 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 // 日付フォーマット関数
@@ -33,7 +33,7 @@ export const getScrollProgress = (): number => {
 };
 
 // デバウンス関数
-export const debounce = <T extends (...args: any[]) => void>(
+export const debounce = <T extends (...args: unknown[]) => void>(
   func: T,
   delay: number
 ): ((...args: Parameters<T>) => void) => {
@@ -45,7 +45,7 @@ export const debounce = <T extends (...args: any[]) => void>(
 };
 
 // スロットル関数
-export const throttle = <T extends (...args: any[]) => void>(
+export const throttle = <T extends (...args: unknown[]) => void>(
   func: T,
   delay: number
 ): ((...args: Parameters<T>) => void) => {
@@ -53,7 +53,7 @@ export const throttle = <T extends (...args: any[]) => void>(
   let lastExecTime = 0;
   return (...args: Parameters<T>) => {
     const currentTime = Date.now();
-    
+
     if (currentTime - lastExecTime > delay) {
       func(...args);
       lastExecTime = currentTime;
@@ -113,7 +113,7 @@ export const storage = {
       return null;
     }
   },
-  
+
   set: <T>(key: string, value: T): void => {
     if (typeof window === 'undefined') return;
     try {
@@ -122,12 +122,12 @@ export const storage = {
       // Handle quota exceeded or other errors
     }
   },
-  
+
   remove: (key: string): void => {
     if (typeof window === 'undefined') return;
     localStorage.removeItem(key);
   },
-  
+
   clear: (): void => {
     if (typeof window === 'undefined') return;
     localStorage.clear();
@@ -194,29 +194,29 @@ export const modalUtils = {
   // モーダル遷移かどうかを判定
   isModalTransition: (currentPath: string, previousPath: string): boolean => {
     // ホームページからプロフィール/プロジェクトへの遷移
-    if (previousPath === '/' && 
+    if (previousPath === '/' &&
         (currentPath.includes('/profile') || currentPath.includes('/projects/'))) {
       return true;
     }
-    
+
     // モーダル内での遷移
     if (currentPath.includes('/(.)') || currentPath.includes('@modal')) {
       return true;
     }
-    
+
     return false;
   },
 
   // 現在のページがモーダル表示中かどうかを判定
   isModalActive: (): boolean => {
     if (typeof window === 'undefined') return false;
-    
+
     // URLにモーダル関連のパラメータがあるかチェック
     const url = new URL(window.location.href);
     const searchParams = url.searchParams;
-    
+
     // modal=trueパラメータがあるかチェック
-    return searchParams.has('modal') || 
+    return searchParams.has('modal') ||
            // またはパスがモーダル経由であることを示すパターンをチェック
            url.pathname.includes('/(.)') ||
            url.pathname.includes('@modal');
@@ -225,25 +225,25 @@ export const modalUtils = {
   // モーダル状態をURLパラメータに設定
   setModalParam: (isModal: boolean) => {
     if (typeof window === 'undefined') return;
-    
+
     const url = new URL(window.location.href);
     if (isModal) {
       url.searchParams.set('modal', 'true');
     } else {
       url.searchParams.delete('modal');
     }
-    
+
     window.history.replaceState({}, '', url.toString());
   },
 
   // モーダルを閉じる時の処理
   closeModal: () => {
     if (typeof window === 'undefined') return;
-    
+
     // URL パラメータからモーダル関連を削除
     const url = new URL(window.location.href);
     url.searchParams.delete('modal');
-    
+
     // ホームページに戻る
     window.history.replaceState({}, '', '/');
   },

@@ -2,15 +2,15 @@
 
 // アニメーション関連の型
 export interface AnimationVariant {
-  initial?: any;
-  animate?: any;
-  exit?: any;
-  transition?: any;
-  hidden?: any;
-  visible?: any;
-  rest?: any;
-  hover?: any;
-  tap?: any;
+  initial?: Record<string, unknown>;
+  animate?: Record<string, unknown>;
+  exit?: Record<string, unknown>;
+  transition?: Record<string, unknown>;
+  hidden?: Record<string, unknown>;
+  visible?: Record<string, unknown>;
+  rest?: Record<string, unknown>;
+  hover?: Record<string, unknown>;
+  tap?: Record<string, unknown>;
 }
 
 export interface AnimationConfig {
@@ -117,7 +117,7 @@ export interface BreadcrumbItem {
 }
 
 // API関連の型
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -134,7 +134,7 @@ export interface PaginationInfo {
   hasPrev: boolean;
 }
 
-export interface PaginatedResponse<T = any> extends ApiResponse<T[]> {
+export interface PaginatedResponse<T = unknown> extends ApiResponse<T[]> {
   pagination: PaginationInfo;
 }
 
@@ -220,10 +220,9 @@ export type DeepPartial<T> = {
 };
 
 // React関連の型エイリアス
-export type FC<P = {}> = React.FunctionComponent<P>;
+export type FC<P = Record<string, never>> = React.FunctionComponent<P>;
 export type ReactElement = React.ReactElement;
 export type ReactNode = React.ReactNode;
-export type ReactChildren = React.ReactChildren;
 export type CSSProperties = React.CSSProperties;
 
 // イベントハンドラーの型
@@ -290,4 +289,4 @@ export interface Article {
   readingTime: number;
   featured: boolean;
   slug: string;
-} 
+}

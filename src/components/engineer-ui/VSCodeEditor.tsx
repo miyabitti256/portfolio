@@ -2,17 +2,15 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  FolderOpen, 
-  Folder,
-  FileText, 
+import {
+  FolderOpen,
+  FileText,
   X,
   Menu,
   ChevronRight,
   ChevronDown,
-  Settings,
-  Search,
-  GitBranch
+  Folder,
+  Package
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -20,7 +18,7 @@ interface FileItem {
   id: string;
   name: string;
   type: 'file' | 'folder';
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  iconName: string;
   content?: React.ReactNode;
   extension?: string;
   children?: FileItem[];
@@ -29,7 +27,7 @@ interface FileItem {
 interface Tab {
   id: string;
   name: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  iconName: string;
   content: React.ReactNode;
   modified?: boolean;
 }
@@ -39,6 +37,20 @@ interface VSCodeEditorProps {
   files: FileItem[];
   onTabChange?: (tabId: string) => void;
 }
+
+// アイコン名からコンポーネントをマッピング
+const getIconComponent = (iconName: string) => {
+  switch (iconName) {
+    case 'Folder':
+      return Folder;
+    case 'FileText':
+      return FileText;
+    case 'Package':
+      return Package;
+    default:
+      return FileText;
+  }
+};
 
 export default function VSCodeEditor({ projectName, files, onTabChange }: VSCodeEditorProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -66,6 +78,11 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // activeTabの変更を監視してonTabChangeを呼び出す
+  useEffect(() => {
+    onTabChange?.(activeTab);
+  }, [activeTab, onTabChange]);
+
   // ドラッグ機能のハンドラー
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isMobile) return;
@@ -77,10 +94,10 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging || isMobile) return;
-    
+
     const deltaX = e.clientX - dragStartX;
     const newWidth = dragStartWidth + deltaX;
-    
+
     if (newWidth < 150) {
       setSidebarOpen(false);
     } else {
@@ -101,7 +118,7 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
       // ドラッグ中はbody全体にカーソルスタイルを適用
       document.body.style.cursor = 'col-resize';
       document.body.style.userSelect = 'none';
-      
+
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
     }
@@ -128,20 +145,18 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
     const existingTab = openTabs.find(tab => tab.id === file.id);
     if (existingTab) {
       setActiveTab(file.id);
-      onTabChange?.(file.id);
       return;
     }
 
     const newTab: Tab = {
       id: file.id,
       name: file.name,
-      icon: file.icon,
-      content: file.content,
+      iconName: file.iconName,
+      content: file.content || <div>No content</div>,
     };
 
     setOpenTabs(prev => [...prev, newTab]);
     setActiveTab(file.id);
-    onTabChange?.(file.id);
 
     // モバイルでファイルを開いたらサイドバーを閉じる
     if (isMobile) {
@@ -151,22 +166,20 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
 
   const closeTab = (tabId: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    
+
     setOpenTabs(prev => {
       const filtered = prev.filter(tab => tab.id !== tabId);
-      
+
       // 閉じたタブがアクティブだった場合
       if (activeTab === tabId) {
         if (filtered.length > 0) {
           const newActiveTab = filtered[filtered.length - 1].id;
           setActiveTab(newActiveTab);
-          onTabChange?.(newActiveTab);
         } else {
           setActiveTab('');
-          onTabChange?.('');
         }
       }
-      
+
       return filtered;
     });
   };
@@ -187,7 +200,8 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
   const renderFileTree = (items: FileItem[], depth = 0) => {
     return items.map((item) => {
       const isExpanded = expandedFolders.has(item.id);
-      
+      const IconComponent = getIconComponent(item.iconName);
+
       return (
         <div key={item.id} style={{ marginLeft: `${depth * 12}px` }}>
           <div
@@ -211,25 +225,25 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
             ) : (
               <div className="w-4" />
             )}
-            
-            <item.icon 
-              size={16} 
+
+            <IconComponent
+              size={16}
               className={
-                item.type === 'folder' 
-                  ? 'text-blue-400' 
-                  : item.extension === '.md' 
+                item.type === 'folder'
+                  ? 'text-blue-400'
+                  : item.extension === '.md'
                     ? 'text-blue-300'
                     : item.extension === '.json'
                       ? 'text-yellow-400'
                       : 'text-gray-300'
-              } 
+              }
             />
             <span className="flex-1 truncate">{item.name}</span>
             {item.type === 'file' && activeTab === item.id && (
               <div className="w-2 h-2 bg-white rounded-full opacity-60" />
             )}
           </div>
-          
+
           {item.type === 'folder' && item.children && isExpanded && (
             <AnimatePresence>
               <motion.div
@@ -249,7 +263,7 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
 
   const activeTabContent = openTabs.find(tab => tab.id === activeTab)?.content;
   const activeTabData = openTabs.find(tab => tab.id === activeTab);
-  
+
   const getFileType = (tab?: Tab) => {
     if (!tab) return 'Text';
     if (tab.name.endsWith('.md')) return 'Markdown';
@@ -265,7 +279,7 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
   };
 
   return (
-    <div 
+    <div
       className={`relative flex flex-col h-full bg-gray-900 text-gray-100 rounded-lg overflow-hidden border border-gray-700 ${
         isDragging ? 'select-none' : ''
       }`}
@@ -282,12 +296,12 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
           >
             <Menu size={16} />
           </Button>
-          
+
           {/* macOS風ドット */}
           <div className="flex gap-2 ml-2">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            <div className="w-3 h-3 bg-red-500 rounded-full" />
+            <div className="w-3 h-3 bg-yellow-500 rounded-full" />
+            <div className="w-3 h-3 bg-green-500 rounded-full" />
           </div>
         </div>
       </div>
@@ -299,9 +313,9 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
           {sidebarOpen && (
             <motion.div
               initial={{ width: 0, opacity: 0 }}
-              animate={{ 
-                width: isMobile ? '85%' : `${sidebarWidth}px`, 
-                opacity: 1 
+              animate={{
+                width: isMobile ? '85%' : `${sidebarWidth}px`,
+                opacity: 1
               }}
               exit={{ width: 0, opacity: 0 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
@@ -341,7 +355,7 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
                       <FolderOpen size={16} className="text-blue-400" />
                       <span className="uppercase tracking-wide">{projectName}</span>
                     </div>
-                    
+
                     <AnimatePresence>
                       {explorerExpanded && (
                         <motion.div
@@ -355,21 +369,6 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </div>
-                </div>
-
-                {/* サイドバーフッター */}
-                <div className="p-3 border-t border-gray-700 flex items-center justify-between">
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white p-1">
-                      <Search size={14} />
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white p-1">
-                      <GitBranch size={14} />
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white p-1">
-                      <Settings size={14} />
-                    </Button>
                   </div>
                 </div>
               </div>
@@ -410,10 +409,12 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
                     }`}
                     onClick={() => {
                       setActiveTab(tab.id);
-                      onTabChange?.(tab.id);
                     }}
                   >
-                    <tab.icon size={14} />
+                                          {(() => {
+                        const TabIconComponent = getIconComponent(tab.iconName);
+                        return <TabIconComponent size={14} />;
+                      })()}
                     <span className={`truncate ${isMobile ? 'max-w-20' : 'max-w-32'}`}>{tab.name}</span>
                     {tab.modified && <div className="w-2 h-2 bg-white rounded-full" />}
                     <Button
@@ -444,6 +445,7 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
                 >
                   {activeTabContent}
                 </motion.div>
+
               ) : (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -473,7 +475,7 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
         </div>
         <div className="flex items-center gap-4">
           <span>Portfolio</span>
-          <span>VSCode</span>
+          <span>VSCode風</span>
         </div>
       </div>
 
@@ -489,4 +491,4 @@ export default function VSCodeEditor({ projectName, files, onTabChange }: VSCode
       )}
     </div>
   );
-} 
+}

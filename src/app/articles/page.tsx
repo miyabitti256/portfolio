@@ -20,8 +20,8 @@ export default async function ArticlesPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
             <Link href="/">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="mb-6 text-sky-700 hover:text-sky-800 hover:bg-sky-200/50"
               >
                 <ArrowLeft size={18} className="mr-2" />
@@ -35,12 +35,12 @@ export default async function ArticlesPage() {
                 技術ブログ
               </h1>
             </div>
-            
+
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               学習過程や技術的な挑戦について記録した技術ブログです。
               プロジェクト開発で得た知見や学習内容を共有しています。
             </p>
-            
+
             <div className="mt-6 text-sm text-gray-500">
               全{allArticles.length}件の記事
             </div>
@@ -72,4 +72,4 @@ export default async function ArticlesPage() {
       </section>
     </div>
   );
-} 
+}

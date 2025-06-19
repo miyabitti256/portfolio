@@ -2,14 +2,12 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Calendar, Clock, Tag, ArrowLeft, ExternalLink } from 'lucide-react';
-import { getArticleBySlug, getAllArticleSlugs } from '@/lib/articles';
+import { getAllArticleSlugs, getArticleBySlug } from '@/lib/articles';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
 interface ArticlePageProps {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
@@ -20,7 +18,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
-  
+
   if (!article) {
     return {
       title: '記事が見つかりません | Portfolio',
@@ -33,7 +31,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   };
 }
 
-export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
 
@@ -54,8 +52,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         <div className="max-w-4xl mx-auto px-6">
           <div>
             <Link href="/articles">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="mb-6 text-sky-700 hover:text-sky-800 hover:bg-sky-200/50"
               >
                 <ArrowLeft size={18} className="mr-2" />
@@ -125,7 +123,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               この記事が役に立ったら、ぜひ他の記事もご覧ください。
             </p>
             <Link href="/articles">
-              <Button 
+              <Button
                 variant="outline"
                 size="lg"
                 className="border-sky-300 text-sky-700 hover:bg-sky-50 hover:border-sky-400"
@@ -139,4 +137,4 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       </section>
     </div>
   );
-} 
+}

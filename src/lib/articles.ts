@@ -66,10 +66,10 @@ export async function getAllArticles(): Promise<Article[]> {
 
         // front matterをパース
         const matterResult = matter(fileContents);
-        
+
         // Markdownを前処理
         const preprocessedContent = preprocessMarkdown(matterResult.content);
-        
+
         // MarkdownをHTMLに変換（GFM + シンタックスハイライト対応）
         const processedContent = await remark()
           .use(remarkGfm) // GitHub Flavored Markdown
@@ -81,7 +81,7 @@ export async function getAllArticles(): Promise<Article[]> {
           }) // シンタックスハイライト
           .use(rehypeStringify) // HTMLを文字列に
           .process(preprocessedContent);
-        
+
         const htmlContent = processedContent.toString();
 
         return {
@@ -110,17 +110,17 @@ export async function getAllArticles(): Promise<Article[]> {
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
   try {
     const fullPath = path.join(articlesDirectory, `${slug}.md`);
-    
+
     if (!fs.existsSync(fullPath)) {
       return null;
     }
 
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const matterResult = matter(fileContents);
-    
+
     // Markdownを前処理
     const preprocessedContent = preprocessMarkdown(matterResult.content);
-    
+
     // MarkdownをHTMLに変換（GFM + シンタックスハイライト対応）
     const processedContent = await remark()
       .use(remarkGfm) // GitHub Flavored Markdown
@@ -132,7 +132,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       }) // シンタックスハイライト
       .use(rehypeStringify) // HTMLを文字列に
       .process(preprocessedContent);
-    
+
     const htmlContent = processedContent.toString();
 
     return {
@@ -164,4 +164,4 @@ export function getAllArticleSlugs(): string[] {
   return fileNames
     .filter(fileName => fileName.endsWith('.md'))
     .map(fileName => fileName.replace(/\.md$/, ''));
-} 
+}

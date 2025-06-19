@@ -180,7 +180,7 @@ export const skills: Skill[] = [
     name: "Vercel",
     category: "tools",
     level: 45,
-    levelText: "初級〜中級", 
+    levelText: "初級〜中級",
     description: "Next.js最適化デプロイ、環境変数管理、ドメイン設定、プレビュー機能を学習中。",
     iconName: "vercel",
     color: "#000000",
@@ -237,7 +237,7 @@ export const futureSkills = [
   {
     id: "go",
     name: "Go",
-    category: "backend", 
+    category: "backend",
     description: "マイクロサービス、CLI開発に優れた言語。Dockerやクラウドネイティブ技術との親和性が高い。",
     iconName: "go",
     color: "#00add8",
@@ -285,7 +285,7 @@ export const getSkillLevel = (level: number): string => {
 
 export const getSkillColor = (level: number): string => {
   if (level >= 60) return 'bg-blue-500';
-  if (level >= 40) return 'bg-green-500'; 
+  if (level >= 40) return 'bg-green-500';
   if (level >= 25) return 'bg-yellow-500';
   return 'bg-gray-400';
 };
