@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Zen_Maru_Gothic } from "next/font/google";
 import { PageTransition } from "@/components/animations/PageTransition";
 import "./globals.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({
         </PageTransition>
         {modal}
       </body>
+      <GoogleAnalytics gaId="G-8V7BBV544Y" />
     </html>
   );
 }
